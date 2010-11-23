@@ -1,0 +1,28 @@
+<!-- This is a comment that will be rendered to output -->
+@extends{template.xhtml}
+
+	@param{title = "The title"}
+
+	@define{body}
+	<h1>Hi, this is the world of templating.</h1>
+	
+	<label for="firstName">First Name:</label><br/>
+	<form action="@@view{}">
+		<input id="name" type="text" value="" />
+		<button name="submit" type="submit" value="@@action{submit, exampleBean.submit}"></button>
+	</form>
+	<ul>
+		@code{ arr = {1,2,3,4,5}}
+		@foreach{ i : arr }
+		<li>@{i}</li>
+		@end{}
+	</ul>
+	@end{}
+	
+	@define{footer}
+		Footer
+	@end{}
+	
+	This should be ignored.
+
+@end{}
