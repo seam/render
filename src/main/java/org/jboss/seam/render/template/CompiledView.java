@@ -70,8 +70,7 @@ public class CompiledView
 
    public String render(final Map<Object, Object> context)
    {
-      CompositionContext compositionContext = new CompositionContext();
-      compositionContext.setTemplateResource(resource);
+      CompositionContext compositionContext = new CompositionContext(resource);
       CompositionContext.storeInMap(context, compositionContext);
       String result = (String) TemplateRuntime.execute(template, context, factory, registry);
 
@@ -80,8 +79,7 @@ public class CompiledView
 
    public String render(final CompositionContext compositionContext, final Map<Object, Object> context)
    {
-      CompositionContext composition = new CompositionContext(compositionContext);
-      compositionContext.setTemplateResource(resource);
+      CompositionContext composition = new CompositionContext(resource, compositionContext);
       CompositionContext.storeInMap(context, composition);
       String result = (String) TemplateRuntime.execute(template, context, factory, registry);
 

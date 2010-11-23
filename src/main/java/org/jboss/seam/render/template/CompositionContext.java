@@ -33,11 +33,18 @@ public class CompositionContext extends TemplateContext<String, Definition>
 {
    public static final String CONTEXT_KEY = "_defs";
    private final CompositionContext context;
-   private TemplateResource<?> resource;
+   private final TemplateResource<?> resource;
 
-   public CompositionContext()
+   public CompositionContext(final TemplateResource<?> resource)
    {
       context = null;
+      this.resource = resource;
+   }
+
+   public CompositionContext(final TemplateResource<?> resource, final CompositionContext context)
+   {
+      this.context = context;
+      this.resource = resource;
    }
 
    @Override
@@ -59,16 +66,6 @@ public class CompositionContext extends TemplateContext<String, Definition>
    public static CompositionContext storeInMap(final Map<Object, Object> map, final CompositionContext context)
    {
       return (CompositionContext) map.put(CONTEXT_KEY, context);
-   }
-
-   public CompositionContext(final CompositionContext context)
-   {
-      this.context = context;
-   }
-
-   public void setTemplateResource(final TemplateResource<?> resource)
-   {
-      this.resource = resource;
    }
 
    public TemplateResource<?> getTemplateResource()

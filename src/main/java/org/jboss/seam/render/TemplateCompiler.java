@@ -34,6 +34,7 @@ import org.jboss.seam.render.template.nodes.ExtendsNode;
 import org.jboss.seam.render.template.nodes.InsertNode;
 import org.jboss.seam.render.template.nodes.ParamNode;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
+import org.jboss.seam.render.util.Assert;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -84,6 +85,7 @@ public class TemplateCompiler
 
    public CompiledView compile(final TemplateResource<?> templateResource)
    {
+      Assert.notNull(templateResource, "Cannot compile a null TemplateResource.");
       Map<String, Class<? extends Node>> nodes = getNodes();
       return compile(templateResource, nodes);
 

@@ -81,6 +81,6 @@ public class CompositeTemplateTest extends RenderTestBase
       CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/multi-definitions.xhtml");
       String output = view.render(context);
 
-      assertEquals("t1def1,t2def2,titlebody,t3t4body", output);
+      assertEquals("t1def1,t2def2,titlebody,t3t4hi", output);
    }
 }

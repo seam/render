@@ -115,8 +115,8 @@ public class ExtendsNode extends ContextualNode
             final VariableResolverFactory factory, final CompositionContext compositionContext,
             final TemplateOutputStream appender)
    {
-      CompositionContext newContext = new CompositionContext(compositionContext);
-      newContext.setTemplateResource(compositionContext.getTemplateResource());
+      TemplateResource<?> resource = compositionContext.getTemplateResource();
+      CompositionContext newContext = new CompositionContext(resource, compositionContext);
       CompositionContext.storeInMap(contextMap, newContext);
       inside.eval(runtime, new NullTemplateOutputStream(), contextMap, factory);
       return newContext;
