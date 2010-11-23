@@ -21,9 +21,12 @@
  */
 package org.jboss.seam.render.template;
 
-import java.util.Map;
+import java.util.Stack;
 
 import org.jboss.seam.render.spi.TemplateResource;
+import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -31,20 +34,39 @@ import org.jboss.seam.render.spi.TemplateResource;
  */
 public class CompositionContext extends TemplateContext<String, Definition>
 {
-   public static final String CONTEXT_KEY = "_defs";
    private final CompositionContext context;
    private final TemplateResource<?> resource;
+   private final VariableResolverFactory variableResolverFactory;
+   private final TemplateRegistry templateRegistry;
+   private TemplateRuntime templateRuntime;
 
-   public CompositionContext(final TemplateResource<?> resource)
+   private static final ThreadLocal<Stack<CompositionContext>> stack;
+
+   static
    {
-      context = null;
+      stack = new ThreadLocal<Stack<CompositionContext>>();
+      stack.set(new Stack<CompositionContext>());
+   }
+
+   public CompositionContext(final VariableResolverFactory factory,
+            final TemplateRegistry registry,
+            final TemplateResource<?> resource)
+   {
+      this.context = null;
+      this.variableResolverFactory = factory;
+      this.templateRegistry = registry;
       this.resource = resource;
    }
 
-   public CompositionContext(final TemplateResource<?> resource, final CompositionContext context)
+   public CompositionContext(
+            final TemplateResource<?> resource,
+            final CompositionContext context)
    {
-      this.context = context;
+      this.variableResolverFactory = context.getVariableResolverFactory();
+      this.templateRegistry = context.getTemplateRegistry();
+      this.templateRuntime = context.getTemplateRuntime();
       this.resource = resource;
+      this.context = context;
    }
 
    @Override
@@ -58,14 +80,23 @@ public class CompositionContext extends TemplateContext<String, Definition>
       return result;
    }
 
-   public static CompositionContext extractFromMap(final Map<Object, Object> map)
+   public static CompositionContext peek()
    {
-      return (CompositionContext) map.get(CONTEXT_KEY);
+      if (!stack.get().isEmpty())
+      {
+         return stack.get().peek();
+      }
+      return null;
    }
 
-   public static CompositionContext storeInMap(final Map<Object, Object> map, final CompositionContext context)
+   public static CompositionContext push(final CompositionContext context)
    {
-      return (CompositionContext) map.put(CONTEXT_KEY, context);
+      return stack.get().push(context);
+   }
+
+   public static CompositionContext pop()
+   {
+      return stack.get().pop();
    }
 
    public TemplateResource<?> getTemplateResource()
@@ -76,5 +107,25 @@ public class CompositionContext extends TemplateContext<String, Definition>
    public CompositionContext getWrapped()
    {
       return context;
+   }
+
+   public VariableResolverFactory getVariableResolverFactory()
+   {
+      return variableResolverFactory;
+   }
+
+   public TemplateRegistry getTemplateRegistry()
+   {
+      return templateRegistry;
+   }
+
+   public TemplateRuntime getTemplateRuntime()
+   {
+      return templateRuntime;
+   }
+
+   public void setTemplateRuntime(final TemplateRuntime templateRuntime)
+   {
+      this.templateRuntime = templateRuntime;
    }
 }

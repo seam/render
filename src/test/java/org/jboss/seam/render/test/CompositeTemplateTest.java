@@ -36,6 +36,7 @@ import org.jboss.seam.render.TemplateCompiler;
 import org.jboss.seam.render.template.CompiledView;
 import org.jboss.seam.render.template.resolver.ClassLoaderTemplateResolver;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
+import org.jboss.seam.render.util.Timer;
 import org.junit.Test;
 
 /**
@@ -54,7 +55,7 @@ public class CompositeTemplateTest extends RenderTestBase
    }
 
    @Test
-   public void testDefinitionsExtracted() throws Exception
+   public void testSimpleCompositeExtending() throws Exception
    {
       String name = "name";
       String value = "lb3";
@@ -62,10 +63,17 @@ public class CompositeTemplateTest extends RenderTestBase
       Map<Object, Object> context = new HashMap<Object, Object>();
       context.put(name, new String[] { value });
 
+      Timer timer = Timer.getTimer().start();
       CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/definitions.xhtml");
+      long compileMilliseconds = timer.getElapsedMilliseconds();
       String output = view.render(context);
+      long elapsedMilliseconds = timer.getElapsedMilliseconds();
 
-      System.out.println(output);
+      System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
+      System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
+      System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
+      System.out.println();
+
       assertNotNull(output);
       assertTrue(output.contains("@view{}"));
       assertTrue(output.contains("<html>"));
@@ -76,11 +84,38 @@ public class CompositeTemplateTest extends RenderTestBase
    @Test
    public void testDefinitionsUsedInContext() throws Exception
    {
-      Map<Object, Object> context = new HashMap<Object, Object>();
-
+      Timer timer = Timer.getTimer().start();
       CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/multi-definitions.xhtml");
-      String output = view.render(context);
+      timer.lap();
+      long compileMilliseconds = timer.getElapsedMilliseconds();
 
-      assertEquals("t1def1,t2def2,titlebody,t3t4hi", output);
+      Map<Object, Object> context = new HashMap<Object, Object>();
+      String output = view.render(context);
+      long elapsedMilliseconds = timer.getElapsedMilliseconds();
+
+      System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
+      System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
+      System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
+      System.out.println();
+      assertEquals("t1def1,t2def2,titlebody", output);
+   }
+
+   @Test
+   public void testNestedDefinitions() throws Exception
+   {
+      Timer timer = Timer.getTimer().start();
+      CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/nested-definitions.xhtml");
+      timer.lap();
+      long compileMilliseconds = timer.getElapsedMilliseconds();
+
+      Map<Object, Object> context = new HashMap<Object, Object>();
+      String output = view.render(context);
+      long elapsedMilliseconds = timer.getElapsedMilliseconds();
+
+      System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
+      System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
+      System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
+      System.out.println();
+      assertEquals("t1t2hi", output);
    }
 }

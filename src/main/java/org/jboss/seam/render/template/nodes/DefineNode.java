@@ -21,12 +21,8 @@
  */
 package org.jboss.seam.render.template.nodes;
 
-import java.util.Map;
-import java.util.Queue;
-
 import org.jboss.seam.render.template.CompositionContext;
 import org.jboss.seam.render.template.Definition;
-import org.jboss.seam.render.util.Tokenizer;
 import org.mvel2.CompileException;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.templates.TemplateRuntime;
@@ -39,10 +35,9 @@ import org.mvel2.templates.util.TemplateOutputStream;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class DefineNode extends Node
+public class DefineNode extends ContextualNode
 {
    private static final long serialVersionUID = 3356732131663865976L;
-   private static final String DELIM = ",";
 
    public DefineNode()
    {
@@ -50,15 +45,19 @@ public class DefineNode extends Node
       terminus = new TerminalNode();
    }
 
-   private Node definition;
-
-   @SuppressWarnings("unchecked")
    @Override
    public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
             final VariableResolverFactory factory)
    {
+      return next != null ? next.eval(runtime, appender, ctx, factory) : null;
+   }
 
-      Node n = definition = next;
+   @Override
+   public boolean demarcate(final Node terminatingNode, final char[] template)
+   {
+
+      Node definition = next;
+      Node n = definition;
 
       while (n.getNext() != null)
       {
@@ -68,23 +67,15 @@ public class DefineNode extends Node
       n.next = new EndNode();
       next = terminus;
 
-      String line = new String(contents);
-      Queue<String> tokens = Tokenizer.tokenize(DELIM, line);
-
-      if (tokens.isEmpty())
+      String key = new String(contents);
+      if (key.isEmpty())
       {
-         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + line + "}");
+         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + key + "}");
       }
 
-      CompositionContext defs = CompositionContext.extractFromMap((Map<Object, Object>) ctx);
-      defs.put(line.trim(), new Definition(runtime, ctx, factory, definition));
+      CompositionContext context = CompositionContext.peek();
+      context.put(key, new Definition(definition));
 
-      return next != null ? next.eval(runtime, appender, ctx, factory) : null;
-   }
-
-   @Override
-   public boolean demarcate(final Node terminatingNode, final char[] template)
-   {
       return false;
    }
 

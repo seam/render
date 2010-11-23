@@ -21,8 +21,6 @@
  */
 package org.jboss.seam.render.template;
 
-import org.mvel2.integration.VariableResolverFactory;
-import org.mvel2.templates.TemplateRuntime;
 import org.mvel2.templates.res.Node;
 import org.mvel2.templates.util.TemplateOutputStream;
 
@@ -32,23 +30,18 @@ import org.mvel2.templates.util.TemplateOutputStream;
  */
 public class Definition
 {
-   private final TemplateRuntime runtime;
-   private final Object context;
-   private final VariableResolverFactory factory;
    private final Node def;
 
-   public Definition(final TemplateRuntime runtime, final Object ctx,
-            final VariableResolverFactory factory, final Node definition)
+   public Definition(final Node definition)
    {
-      this.runtime = runtime;
-      this.context = ctx;
-      this.factory = factory;
       this.def = definition;
    }
 
-   public void eval(final TemplateOutputStream stream)
+   public void eval(final CompositionContext compositionContext, final TemplateOutputStream stream,
+            final Object context)
    {
-      def.eval(runtime, stream, context, factory);
+      def.eval(compositionContext.getTemplateRuntime(), stream, context,
+               compositionContext.getVariableResolverFactory());
    }
 
 }

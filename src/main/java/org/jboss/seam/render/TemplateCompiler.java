@@ -36,7 +36,6 @@ import org.jboss.seam.render.template.nodes.ParamNode;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.jboss.seam.render.util.Assert;
 import org.mvel2.integration.VariableResolverFactory;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.res.Node;
@@ -48,18 +47,18 @@ import org.mvel2.templates.res.Node;
 public class TemplateCompiler
 {
    private final TemplateRegistry registry;
-   private final MapVariableResolverFactory functions;
+   private final VariableResolverFactory variableFactory;
    private final TemplateResolverFactory resolverFactory;
 
    @Inject
-   public TemplateCompiler(final VariableResolverFactory factory,
+   public TemplateCompiler(final VariableResolverFactory variableFactory,
             final TemplateResolverFactory resolverFactory)
    {
+      this.variableFactory = variableFactory;
       this.resolverFactory = resolverFactory;
       this.registry = new SimpleTemplateRegistry();
       // create a map resolve to hold the functions we want to inject, and chain
       // the ELVariableResolverFactory to this factory.
-      functions = new MapVariableResolverFactory(new HashMap<String, Object>(), factory);
    }
 
    /**
@@ -94,13 +93,13 @@ public class TemplateCompiler
    public CompiledView compile(final TemplateResource<?> templateResource,
             final Map<String, Class<? extends Node>> nodes)
    {
-      CompiledView view = new CompiledView(functions, registry, templateResource, nodes);
+      CompiledView view = new CompiledView(variableFactory, registry, templateResource, nodes);
       return view;
    }
 
-   public CompiledView compileRelative(final TemplateResource<?> templateResource, final String relativePath)
+   public CompiledView compileRelative(final TemplateResource<?> originResource, final String relativePath)
    {
-      TemplateResource<?> resource = resolverFactory.resolveRelative(templateResource, relativePath);
+      TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
       return compile(resource);
    }
 

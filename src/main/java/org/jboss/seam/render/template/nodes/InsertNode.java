@@ -21,7 +21,6 @@
  */
 package org.jboss.seam.render.template.nodes;
 
-import java.util.Map;
 import java.util.Queue;
 
 import org.jboss.seam.render.template.CompositionContext;
@@ -53,11 +52,37 @@ public class InsertNode extends ContextualNode
 
    private Node defaultContent;
 
-   @SuppressWarnings("unchecked")
    @Override
    public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
             final VariableResolverFactory factory)
    {
+      String line = new String(contents);
+      Queue<String> tokens = Tokenizer.tokenize(DELIM, line);
+
+      if (tokens.isEmpty())
+      {
+         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + line + "}");
+      }
+
+      CompositionContext context = CompositionContext.peek();
+      Definition definition = context.get(line.trim());
+
+      if (definition == null)
+      {
+         defaultContent.eval(runtime, appender, ctx, factory);
+      }
+      else
+      {
+         definition.eval(context, appender, ctx);
+      }
+
+      return next != null ? next.eval(runtime, appender, ctx, factory) : null;
+   }
+
+   @Override
+   public boolean demarcate(final Node terminatingNode, final char[] template)
+   {
+
       Node n = defaultContent = next;
 
       while (n.getNext() != null)
@@ -68,32 +93,6 @@ public class InsertNode extends ContextualNode
       n.next = new EndNode();
       next = terminus;
 
-      String line = new String(contents);
-      Queue<String> tokens = Tokenizer.tokenize(DELIM, line);
-
-      if (tokens.isEmpty())
-      {
-         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + line + "}");
-      }
-
-      CompositionContext defs = CompositionContext.extractFromMap((Map<Object, Object>) ctx);
-      Definition definition = defs.get(line.trim());
-
-      if (definition == null)
-      {
-         defaultContent.eval(runtime, appender, ctx, factory);
-      }
-      else
-      {
-         definition.eval(appender);
-      }
-
-      return next != null ? next.eval(runtime, appender, ctx, factory) : null;
-   }
-
-   @Override
-   public boolean demarcate(final Node terminatingNode, final char[] template)
-   {
       return false;
    }
 

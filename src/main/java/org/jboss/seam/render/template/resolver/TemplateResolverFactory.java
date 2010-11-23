@@ -24,6 +24,8 @@ package org.jboss.seam.render.template.resolver;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
 import org.jboss.seam.render.spi.TemplateResolver;
 import org.jboss.seam.render.spi.TemplateResource;
 import org.jboss.seam.render.util.Assert;
@@ -33,6 +35,7 @@ import org.jboss.weld.extensions.util.service.ServiceLoader;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
+@Singleton
 @SuppressWarnings("rawtypes")
 public class TemplateResolverFactory implements TemplateResolver<Object>
 {

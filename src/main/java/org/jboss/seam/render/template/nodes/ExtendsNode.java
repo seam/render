@@ -21,17 +21,14 @@
  */
 package org.jboss.seam.render.template.nodes;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.jboss.seam.render.TemplateCompiler;
-import org.jboss.seam.render.spi.TemplateResource;
 import org.jboss.seam.render.template.CompiledView;
 import org.jboss.seam.render.template.CompositionContext;
 import org.jboss.seam.render.template.util.NullTemplateOutputStream;
-import org.jboss.seam.render.util.Assert;
 import org.mvel2.CompileException;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.templates.TemplateRuntime;
@@ -50,91 +47,70 @@ public class ExtendsNode extends ContextualNode
    @Inject
    private TemplateCompiler compiler;
 
+   private String requestedTemplate;
+
+   private CompiledView compiledView;
+
+   private CompositionContext compositionContext;
+
    private Node inside;
 
    public ExtendsNode()
    {
       super();
-      terminus = new TerminalNode();
+      this.terminus = new TerminalNode();
    }
 
    @Override
-   public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
-            final VariableResolverFactory factory)
+   public void setContents(final char[] contents)
    {
-      String requestedTemplate = new String(contents);
-      if ((requestedTemplate == null) || requestedTemplate.isEmpty())
+      super.setContents(contents);
+      setup();
+   }
+
+   private void setup()
+   {
+      // This is processed when the @extends{} node is found and initialized
+      requestedTemplate = new String(contents).trim();
+      if (requestedTemplate.isEmpty())
       {
          throw new CompileException("@" + getName()
                   + "{ ...template... } requires 1 parameter, instead received @" + getName() + "{"
                   + requestedTemplate + "}");
       }
 
-      next = next.next;
-      Node saved = next.next;
-      next.next = null;
+      compositionContext = CompositionContext.peek();
+      compositionContext = new CompositionContext(
+               compositionContext.getVariableResolverFactory(),
+               compositionContext.getTemplateRegistry(),
+               compositionContext.getTemplateResource());
+      CompositionContext.push(compositionContext);
+      compiledView = compiler.compileRelative(compositionContext.getTemplateResource(), requestedTemplate);
+   }
 
-      executeInside(runtime, appender, ctx, factory, requestedTemplate);
+   @Override
+   @SuppressWarnings("unchecked")
+   public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
+            final VariableResolverFactory factory)
+   {
+      Map<Object, Object> context = (Map<Object, Object>) ctx;
 
-      next.next = saved;
+      inside.eval(runtime, new NullTemplateOutputStream(), ctx, factory);
+
+      compositionContext.setTemplateRuntime(runtime);
+      CompositionContext.push(compositionContext);
+      compiledView.render(runtime, appender, context, factory);
+      CompositionContext.pop();
 
       return next != null ? next.eval(runtime, appender, ctx, factory) : null;
-   }
-
-   @SuppressWarnings("unchecked")
-   private void executeInside(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
-            final VariableResolverFactory factory, final String requestedTemplate)
-   {
-      // TODO consider evaluating this for dynamic template names
-      String requested = requestedTemplate.trim();
-
-      if (requested != null)
-      {
-         Map<Object, Object> clone = cloneContextMap((Map<Object, Object>) ctx);
-
-         CompositionContext thisContext = CompositionContext.extractFromMap(clone);
-         CompositionContext newContext = storeBindingsInNewCompositionContext(runtime, clone, factory, thisContext,
-                  appender);
-
-         TemplateResource<?> templateResource = thisContext.getTemplateResource();
-         CompiledView composite = compiler.compileRelative(templateResource, requested);
-         // TODO this needs to append directly to the stream, not using a string as a buffer
-         String render = composite.render(newContext, clone);
-
-         // CompositionContext.storeInMap((Map<Object, Object>) ctx, savedContext);
-
-         Assert.equals(thisContext, CompositionContext.extractFromMap((Map<Object, Object>) ctx),
-                  "CompositionContext was modified during evaluation. This is not allowed.");
-
-         appender.append(render);
-      }
-   }
-
-   private CompositionContext storeBindingsInNewCompositionContext(final TemplateRuntime runtime,
-            final Map<Object, Object> contextMap,
-            final VariableResolverFactory factory, final CompositionContext compositionContext,
-            final TemplateOutputStream appender)
-   {
-      TemplateResource<?> resource = compositionContext.getTemplateResource();
-      CompositionContext newContext = new CompositionContext(resource, compositionContext);
-      CompositionContext.storeInMap(contextMap, newContext);
-      inside.eval(runtime, new NullTemplateOutputStream(), contextMap, factory);
-      return newContext;
-   }
-
-   private Map<Object, Object> cloneContextMap(final Map<Object, Object> ctx)
-   {
-      Map<Object, Object> result = new HashMap<Object, Object>();
-      result.putAll(ctx);
-      return result;
-      // return ctx;
    }
 
    @Override
    public boolean demarcate(final Node terminatingNode, final char[] template)
    {
-      this.inside = next;
+      inside = next;
       next = terminus;
+      CompositionContext.pop();
       return true;
    }
 

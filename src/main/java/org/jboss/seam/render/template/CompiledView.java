@@ -21,16 +21,19 @@
  */
 package org.jboss.seam.render.template;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.seam.render.spi.TemplateResource;
 import org.jboss.seam.render.util.Assert;
 import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.mvel2.templates.res.Node;
+import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -43,7 +46,12 @@ public class CompiledView
    private final VariableResolverFactory factory;
    private final TemplateRegistry registry;
 
-   private final TemplateResource<?> resource;
+   public CompiledView(final CompositionContext context,
+            final TemplateResource<?> resource,
+            final Map<String, Class<? extends Node>> nodes)
+   {
+      this(context.getVariableResolverFactory(), context.getTemplateRegistry(), resource, nodes);
+   }
 
    public CompiledView(final VariableResolverFactory factory,
             final TemplateRegistry registry,
@@ -54,9 +62,18 @@ public class CompiledView
       Assert.notNull(registry, "TemplateRegistry must not be null.");
       Assert.notNull(resource, "TemplateResource must not be null.");
 
-      this.factory = factory;
+      this.factory = new MapVariableResolverFactory(new HashMap<String, Object>(), factory);
       this.registry = registry;
-      this.resource = resource;
+
+      CompositionContext context = CompositionContext.peek();
+      if (context != null)
+      {
+         CompositionContext.push(new CompositionContext(resource, context));
+      }
+      else
+      {
+         CompositionContext.push(new CompositionContext(factory, registry, resource));
+      }
 
       if (nodes == null)
       {
@@ -66,24 +83,21 @@ public class CompiledView
       {
          template = TemplateCompiler.compileTemplate(resource.getInputStream(), nodes);
       }
+      CompositionContext.pop();
    }
 
    public String render(final Map<Object, Object> context)
    {
-      CompositionContext compositionContext = new CompositionContext(resource);
-      CompositionContext.storeInMap(context, compositionContext);
       String result = (String) TemplateRuntime.execute(template, context, factory, registry);
-
       return result;
    }
 
-   public String render(final CompositionContext compositionContext, final Map<Object, Object> context)
+   public void render(final TemplateRuntime runtime, final TemplateOutputStream appender,
+            final Map<Object, Object> context,
+            final VariableResolverFactory factory)
    {
-      CompositionContext composition = new CompositionContext(resource, compositionContext);
-      CompositionContext.storeInMap(context, composition);
-      String result = (String) TemplateRuntime.execute(template, context, factory, registry);
-
-      return result;
+      String result = (String) TemplateRuntime.execute(template, context, runtime.getNamedTemplateRegistry());
+      appender.append(result);
    }
 
 }
