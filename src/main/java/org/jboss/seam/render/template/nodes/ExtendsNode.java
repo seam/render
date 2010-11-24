@@ -95,7 +95,19 @@ public class ExtendsNode extends ContextualNode
    {
       Map<Object, Object> context = (Map<Object, Object>) ctx;
 
+      Node n = inside.next;
+      while ((n != terminus) && (n != null))
+      {
+         n = n.next;
+      }
+      Node saved = null;
+      if (n != null)
+      {
+         saved = n.next;
+         n.next = null;
+      }
       inside.eval(runtime, new NullTemplateOutputStream(), ctx, factory);
+      next = saved;
 
       compositionContext.setTemplateRuntime(runtime);
       CompositionContext.push(compositionContext);
