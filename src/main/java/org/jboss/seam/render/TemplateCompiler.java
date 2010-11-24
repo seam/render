@@ -50,6 +50,8 @@ public class TemplateCompiler
    private final VariableResolverFactory variableFactory;
    private final TemplateResolverFactory resolverFactory;
 
+   private final Map<String, Class<? extends Node>> nodes = new HashMap<String, Class<? extends Node>>();
+
    @Inject
    public TemplateCompiler(final VariableResolverFactory variableFactory,
             final TemplateResolverFactory resolverFactory)
@@ -57,6 +59,10 @@ public class TemplateCompiler
       this.variableFactory = variableFactory;
       this.resolverFactory = resolverFactory;
       this.registry = new SimpleTemplateRegistry();
+      addNode("param", ParamNode.class);
+      addNode("extends", ExtendsNode.class);
+      addNode("define", DefineNode.class);
+      addNode("insert", InsertNode.class);
       // create a map resolve to hold the functions we want to inject, and chain
       // the ELVariableResolverFactory to this factory.
    }
@@ -97,21 +103,27 @@ public class TemplateCompiler
       return view;
    }
 
+   public CompiledView compileRelative(final TemplateResource<?> originResource, final String relativePath,
+            final Map<String, Class<? extends Node>> nodes)
+   {
+      TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
+      return compile(resource, nodes);
+   }
+
    public CompiledView compileRelative(final TemplateResource<?> originResource, final String relativePath)
    {
       TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
       return compile(resource);
    }
 
-   private Map<String, Class<? extends Node>> getNodes()
+   public Map<String, Class<? extends Node>> getNodes()
    {
-      Map<String, Class<? extends Node>> nodes = new HashMap<String, Class<? extends Node>>();
-
-      nodes.put("define", DefineNode.class);
-      nodes.put("extends", ExtendsNode.class);
-      nodes.put("insert", InsertNode.class);
-      nodes.put("param", ParamNode.class);
       return nodes;
+   }
+
+   public void addNode(final String name, final Class<? extends Node> type)
+   {
+      nodes.put(name, type);
    }
 
    public TemplateResolverFactory getTemplateResolverFactory()
