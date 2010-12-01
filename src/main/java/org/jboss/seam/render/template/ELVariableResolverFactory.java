@@ -45,13 +45,28 @@ public class ELVariableResolverFactory extends BaseVariableResolverFactory
    }
 
    @Override
+   public VariableResolver getVariableResolver(final String name)
+   {
+      if (isLocallyResolvable(name))
+      {
+         return new ELVariableResolver(expressions, name);
+      }
+      else if (getNextFactory() != null)
+         return getNextFactory().getVariableResolver(name);
+      else
+         return super.getVariableResolver(name);
+   }
+
+   @Override
    public VariableResolver createVariable(final String name, final Object value)
    {
       if (isLocallyResolvable(name))
       {
          ValueExpression expression = expressions.getExpressionFactory().createValueExpression(value, Object.class);
          Class<?> type = expression.getType(expressions.getELContext());
-         return createVariable(name, value, type);
+         ELVariableResolver resolver = new ELVariableResolver(expressions, name, type);
+         resolver.setValue(value);
+         return resolver;
       }
       else if (isResolveable(name))
       {
@@ -66,6 +81,7 @@ public class ELVariableResolverFactory extends BaseVariableResolverFactory
       if (isLocallyResolvable(name))
       {
          ELVariableResolver resolver = new ELVariableResolver(expressions, name, type);
+         resolver.setValue(value);
          return resolver;
       }
       else if (isResolveable(name))
@@ -85,7 +101,7 @@ public class ELVariableResolverFactory extends BaseVariableResolverFactory
    public boolean isResolveable(final String name)
    {
       boolean result = false;
-      result = isLocallyResolvable(name) && isNextResolveable(name);
+      result = isLocallyResolvable(name) || isNextResolveable(name);
       return result;
    }
 
@@ -103,6 +119,7 @@ public class ELVariableResolverFactory extends BaseVariableResolverFactory
       }
       catch (Exception e)
       {
+         e.printStackTrace();
       }
 
       return result;

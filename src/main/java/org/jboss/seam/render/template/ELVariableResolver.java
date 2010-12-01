@@ -48,6 +48,14 @@ public class ELVariableResolver implements VariableResolver
       this.type = type;
    }
 
+   public ELVariableResolver(final Expressions expressions, final String name)
+   {
+      this.expressions = expressions;
+      this.context = expressions.getELContext();
+      this.name = name;
+      this.type = Object.class;
+   }
+
    @Override
    public String getName()
    {
