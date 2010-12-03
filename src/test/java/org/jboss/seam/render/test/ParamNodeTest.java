@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 import org.jboss.seam.render.RenderTestBase;
 import org.jboss.seam.render.TemplateCompiler;
-import org.jboss.seam.render.template.CompiledView;
+import org.jboss.seam.render.template.CompiledTemplateResource;
 import org.jboss.seam.render.template.resolver.ClassLoaderTemplateResolver;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class ParamNodeTest extends RenderTestBase
       Map<Object, Object> context = new HashMap<Object, Object>();
       context.put(name, new String[] { value });
 
-      CompiledView view = compiler.compile("org/jboss/seam/render/views/params/single.xhtml");
+      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/params/single.xhtml");
       String output = view.render(context);
 
       assertEquals("The title", context.get("title"));

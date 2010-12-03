@@ -46,7 +46,14 @@ import org.jboss.weld.extensions.util.service.ServiceLoader;
  */
 public interface TemplateResolver<T>
 {
+   /**
+    * Attempt to resolve a {@link TemplateResource} using the given path. Return null if resolution fails.
+    */
    public TemplateResource<T> resolve(String target);
 
+   /**
+    * Attempt to resolve a {@link TemplateResource} using the given origin and relative path. Return null if resolution
+    * fails.
+    */
    public TemplateResource<T> resolveRelative(TemplateResource<T> origin, String target);
 }

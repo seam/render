@@ -19,25 +19,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.seam.render.spi;
+package org.jboss.seam.render.template.resolver;
 
-import java.io.InputStream;
 
 /**
- * Handle to a templatable resource.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface TemplateResource<T>
+public class TemplateResolutionException extends RuntimeException
 {
-   String getPath();
+   private static final long serialVersionUID = -6912613014462282692L;
 
-   InputStream getInputStream();
+   public TemplateResolutionException()
+   {
+      super();
+   }
 
-   long getLastModified();
+   public TemplateResolutionException(final String message, final Throwable e)
+   {
+      super(message, e);
+   }
 
-   T getUnderlyingResource();
+   public TemplateResolutionException(final String message)
+   {
+      super(message);
+   }
 
-   TemplateResolver<T> getResolvedBy();
+   public TemplateResolutionException(final Throwable e)
+   {
+      super(e);
+   }
+
 }

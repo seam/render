@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 import org.jboss.seam.render.RenderTestBase;
 import org.jboss.seam.render.TemplateCompiler;
-import org.jboss.seam.render.template.CompiledView;
+import org.jboss.seam.render.template.CompiledTemplateResource;
 import org.jboss.seam.render.template.resolver.ClassLoaderTemplateResolver;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class ELVariableResolverTest extends RenderTestBase
    {
       Map<Object, Object> context = new HashMap<Object, Object>();
 
-      CompiledView view = compiler.compile("org/jboss/seam/render/views/el-resolver/single.xhtml");
+      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/el-resolver/single.xhtml");
       String output = view.render(context);
 
       assertEquals("Foo", output);

@@ -21,7 +21,9 @@
  */
 package org.jboss.seam.render.template.resolver;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 
 import org.jboss.seam.render.spi.TemplateResolver;
 import org.jboss.seam.render.spi.TemplateResource;
@@ -71,6 +73,21 @@ public class ClassLoaderTemplateResource implements TemplateResource<ClassLoader
    public TemplateResolver<ClassLoader> getResolvedBy()
    {
       return resolver;
+   }
+
+   @Override
+   public long getLastModified()
+   {
+      URLConnection connection = null;
+      try
+      {
+         connection = loader.getResource(path).openConnection();
+         return connection.getLastModified();
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException("Could not determine last modified time for resource [" + path + "]", e);
+      }
    }
 
 }

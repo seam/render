@@ -65,7 +65,7 @@ public class FileTemplateResource implements TemplateResource<File>
       }
       catch (FileNotFoundException e)
       {
-         throw new IllegalStateException("Could not open " + this.getClass().getSimpleName() + " at ["
+         throw new RuntimeException("Could not open " + this.getClass().getSimpleName() + " at ["
                   + resource.getAbsolutePath() + "]", e);
       }
    }
@@ -74,6 +74,12 @@ public class FileTemplateResource implements TemplateResource<File>
    public TemplateResolver<File> getResolvedBy()
    {
       return resolvedBy;
+   }
+
+   @Override
+   public long getLastModified()
+   {
+      return resource.lastModified();
    }
 
 }

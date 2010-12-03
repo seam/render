@@ -36,24 +36,26 @@ import org.mvel2.templates.res.Node;
 import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
+ * A {@link TemplateResource} that has been compiled and is ready to be rendered.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class CompiledView
+public class CompiledTemplateResource
 {
 
    private final CompiledTemplate template;
    private final VariableResolverFactory factory;
    private final TemplateRegistry registry;
 
-   public CompiledView(final CompositionContext context,
+   public CompiledTemplateResource(final CompositionContext context,
             final TemplateResource<?> resource,
             final Map<String, Class<? extends Node>> nodes)
    {
       this(context.getVariableResolverFactory(), context.getTemplateRegistry(), resource, nodes);
    }
 
-   public CompiledView(final VariableResolverFactory factory,
+   public CompiledTemplateResource(final VariableResolverFactory factory,
             final TemplateRegistry registry,
             final TemplateResource<?> resource,
             final Map<String, Class<? extends Node>> nodes)

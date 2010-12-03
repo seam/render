@@ -33,7 +33,7 @@ import javax.inject.Inject;
 
 import org.jboss.seam.render.RenderTestBase;
 import org.jboss.seam.render.TemplateCompiler;
-import org.jboss.seam.render.template.CompiledView;
+import org.jboss.seam.render.template.CompiledTemplateResource;
 import org.jboss.seam.render.template.resolver.ClassLoaderTemplateResolver;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.jboss.seam.render.util.Timer;
@@ -59,7 +59,7 @@ public class CompositeTemplateTest extends RenderTestBase
    {
       Map<Object, Object> context = new HashMap<Object, Object>();
       Timer timer = Timer.getTimer().start();
-      CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/multi-definitions.xhtml");
+      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/multi-definitions.xhtml");
       long compileMilliseconds = timer.getElapsedMilliseconds();
 
       String output = view.render(context);
@@ -82,7 +82,7 @@ public class CompositeTemplateTest extends RenderTestBase
       context.put(name, new String[] { value });
 
       Timer timer = Timer.getTimer().start();
-      CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/definitions.xhtml");
+      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/definitions.xhtml");
       long compileMilliseconds = timer.getElapsedMilliseconds();
       String output = view.render(context);
       long elapsedMilliseconds = timer.getElapsedMilliseconds();
@@ -104,7 +104,7 @@ public class CompositeTemplateTest extends RenderTestBase
    {
       Map<Object, Object> context = new HashMap<Object, Object>();
       Timer timer = Timer.getTimer().start();
-      CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/nested-definitions.xhtml");
+      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/nested-definitions.xhtml");
       long compileMilliseconds = timer.getElapsedMilliseconds();
 
       String output = view.render(context);

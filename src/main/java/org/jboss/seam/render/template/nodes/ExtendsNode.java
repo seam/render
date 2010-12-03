@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.jboss.seam.render.TemplateCompiler;
-import org.jboss.seam.render.template.CompiledView;
+import org.jboss.seam.render.template.CompiledTemplateResource;
 import org.jboss.seam.render.template.CompositionContext;
 import org.jboss.seam.render.template.util.NullTemplateOutputStream;
 import org.mvel2.CompileException;
@@ -49,7 +49,7 @@ public class ExtendsNode extends ContextualNode
 
    private String requestedTemplate;
 
-   private CompiledView compiledView;
+   private CompiledTemplateResource compiledView;
 
    private CompositionContext compositionContext;
 

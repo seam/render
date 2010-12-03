@@ -28,11 +28,12 @@ import javax.inject.Inject;
 
 import org.jboss.seam.render.spi.TemplateResolver;
 import org.jboss.seam.render.spi.TemplateResource;
-import org.jboss.seam.render.template.CompiledView;
+import org.jboss.seam.render.template.CompiledTemplateResource;
 import org.jboss.seam.render.template.nodes.DefineNode;
 import org.jboss.seam.render.template.nodes.ExtendsNode;
 import org.jboss.seam.render.template.nodes.InsertNode;
 import org.jboss.seam.render.template.nodes.ParamNode;
+import org.jboss.seam.render.template.resolver.TemplateResolutionException;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.jboss.seam.render.util.Assert;
 import org.mvel2.integration.VariableResolverFactory;
@@ -69,9 +70,9 @@ public class TemplateCompiler
 
    /**
     * Resolve the given path using any configured {@link TemplateResolver} and compile it with the default nodes. Return
-    * the result as a {@link CompiledView}.
+    * the result as a {@link CompiledTemplateResource}.
     */
-   public CompiledView compile(final String path)
+   public CompiledTemplateResource compile(final String path) throws TemplateResolutionException
    {
       TemplateResource<?> resource = resolverFactory.resolve(path);
       return compile(resource);
@@ -79,16 +80,16 @@ public class TemplateCompiler
 
    /**
     * Resolve the given path using any configured {@link TemplateResolver} instances and compile it with the given map
-    * of named {@link Node} types. Return the result as a {@link CompiledView}.
+    * of named {@link Node} types. Return the result as a {@link CompiledTemplateResource}.
     */
-   public CompiledView compile(final String path,
-            final Map<String, Class<? extends Node>> nodes)
+   public CompiledTemplateResource compile(final String path,
+            final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException
    {
       TemplateResource<?> resource = resolverFactory.resolve(path);
       return compile(resource, nodes);
    }
 
-   public CompiledView compile(final TemplateResource<?> templateResource)
+   public CompiledTemplateResource compile(final TemplateResource<?> templateResource) throws TemplateResolutionException
    {
       Assert.notNull(templateResource, "Cannot compile a null TemplateResource.");
       Map<String, Class<? extends Node>> nodes = getNodes();
@@ -96,21 +97,22 @@ public class TemplateCompiler
 
    }
 
-   public CompiledView compile(final TemplateResource<?> templateResource,
-            final Map<String, Class<? extends Node>> nodes)
+   public CompiledTemplateResource compile(final TemplateResource<?> templateResource,
+            final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException
    {
-      CompiledView view = new CompiledView(variableFactory, registry, templateResource, nodes);
+      CompiledTemplateResource view = new CompiledTemplateResource(variableFactory, registry, templateResource, nodes);
       return view;
    }
 
-   public CompiledView compileRelative(final TemplateResource<?> originResource, final String relativePath,
-            final Map<String, Class<? extends Node>> nodes)
+   public CompiledTemplateResource compileRelative(final TemplateResource<?> originResource, final String relativePath,
+            final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException
    {
       TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
       return compile(resource, nodes);
    }
 
-   public CompiledView compileRelative(final TemplateResource<?> originResource, final String relativePath)
+   public CompiledTemplateResource compileRelative(final TemplateResource<?> originResource, final String relativePath)
+            throws TemplateResolutionException
    {
       TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
       return compile(resource);

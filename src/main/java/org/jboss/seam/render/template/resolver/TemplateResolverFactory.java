@@ -50,7 +50,7 @@ public class TemplateResolverFactory implements TemplateResolver<Object>
 
    @Override
    @SuppressWarnings("unchecked")
-   public TemplateResource resolve(final String target)
+   public TemplateResource resolve(final String target) throws TemplateResolutionException
    {
       Assert.notNull(target, "Target resource must not be null.");
       loadResolvers();
@@ -67,8 +67,12 @@ public class TemplateResolverFactory implements TemplateResolver<Object>
          }
       }
 
-      Assert.notNull(resource, "Could not load requested resource: [" + target + "] with any configured resolvers:"
-               + resolvers + ", " + addedResolvers);
+      if (resource == null)
+      {
+         throw new TemplateResolutionException("Could not load requested resource: [" + target
+                  + "] with any configured resolvers:"
+                  + resolvers + ", " + addedResolvers);
+      }
 
       return resource;
    }
@@ -76,6 +80,7 @@ public class TemplateResolverFactory implements TemplateResolver<Object>
    @Override
    @SuppressWarnings("unchecked")
    public TemplateResource resolveRelative(final TemplateResource origin, final String relativePath)
+            throws TemplateResolutionException
    {
       Assert.notNull(origin, "Origin resource was null when attempting to resolve [" + relativePath + "]");
       Assert.notNull(
@@ -84,6 +89,14 @@ public class TemplateResolverFactory implements TemplateResolver<Object>
                         + origin.getPath() + "]");
       TemplateResolver resolver = origin.getResolvedBy();
       TemplateResource result = resolver.resolveRelative(origin, relativePath);
+
+      if (result == null)
+      {
+         throw new TemplateResolutionException("Could not load requested resource: [" + relativePath
+                  + "] using origin resolver [" + origin.getResolvedBy() + "] from resource [" + origin.getPath()
+                  + "]");
+      }
+
       return result;
    }
 

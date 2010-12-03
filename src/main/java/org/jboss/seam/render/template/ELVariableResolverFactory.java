@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import org.jboss.weld.extensions.el.Expressions;
 import org.mvel2.integration.VariableResolver;
+import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.BaseVariableResolverFactory;
 
 /**
@@ -41,6 +42,13 @@ public class ELVariableResolverFactory extends BaseVariableResolverFactory
    @Inject
    public ELVariableResolverFactory(final Expressions expressions)
    {
+      this.nextFactory = null;
+      this.expressions = expressions;
+   }
+
+   public ELVariableResolverFactory(final Expressions expressions, final VariableResolverFactory nextFactory)
+   {
+      this.nextFactory = nextFactory;
       this.expressions = expressions;
    }
 
