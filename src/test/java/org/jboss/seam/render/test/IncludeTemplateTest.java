@@ -21,40 +21,43 @@
  */
 package org.jboss.seam.render.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.seam.render.template.compiler.CustomTemplateCompiler;
+import javax.inject.Inject;
+
+import org.jboss.seam.render.RenderTestBase;
+import org.jboss.seam.render.TemplateCompiler;
+import org.jboss.seam.render.template.CompiledTemplateResource;
+import org.jboss.seam.render.template.resolver.ClassLoaderTemplateResolver;
+import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.junit.Test;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
-import org.mvel2.templates.CompiledTemplate;
-import org.mvel2.templates.TemplateRuntime;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class MVELSyntaxTest
+public class IncludeTemplateTest extends RenderTestBase
 {
-   @Test
-   public void testIf() throws Exception
-   {
-      CompiledTemplate template = CustomTemplateCompiler.compileTemplate("@if{true}hi@end{}");
-      String result = (String) TemplateRuntime.execute(template);
+   @Inject
+   private TemplateCompiler compiler;
 
-      assertEquals("hi", result);
+   @Inject
+   protected void init(final TemplateResolverFactory factory)
+   {
+      compiler.getTemplateResolverFactory().addResolver(
+               new ClassLoaderTemplateResolver(this.getClass().getClassLoader()));
    }
 
    @Test
-   public void testDynamicArrayVariableAssignment() throws Exception
+   public void testParamsAreAssignedToContextViaString() throws Exception
    {
-      CompiledTemplate template = CustomTemplateCompiler
-               .compileTemplate("@code{ arr = {1, 2, 3, 4, 5} }@foreach{i:arr}@{i}@end{}");
-      Map<String, Object> map = new HashMap<String, Object>();
-      String result = (String) TemplateRuntime.execute(template, map, new MapVariableResolverFactory(map));
+      Map<Object, Object> context = new HashMap<Object, Object>();
 
-      assertEquals("12345", result);
+      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/include/basic.xhtml");
+      String output = view.render(context);
+
+      assertTrue(output.contains("Hello World"));
    }
 }

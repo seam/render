@@ -1,24 +1,21 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
+/**
+ * MVEL 2.0
+ * Copyright (C) 2007 The Codehaus
+ * Mike Brock, Dhanji Prasanna, John Graham, Mark Proctor
  *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.jboss.seam.render.template.nodes;
 
 import java.util.Map;
@@ -26,47 +23,41 @@ import java.util.Map;
 import org.jboss.seam.render.TemplateCompiler;
 import org.jboss.seam.render.template.CompiledTemplateResource;
 import org.jboss.seam.render.template.CompositionContext;
-import org.jboss.seam.render.template.util.NullTemplateOutputStream;
 import org.mvel2.CompileException;
+import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.templates.TemplateRuntime;
 import org.mvel2.templates.res.Node;
-import org.mvel2.templates.res.TerminalNode;
 import org.mvel2.templates.util.TemplateOutputStream;
+import org.mvel2.templates.util.TemplateTools;
+import org.mvel2.util.ParseTools;
 
-/**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
- */
-public class ExtendsNode extends ContextualNode
+public class IncludeNode extends ContextualNode
 {
-   private static final long serialVersionUID = -9214745288595708748L;
-
-   private String requestedTemplate;
-
-   private CompiledTemplateResource compiledView;
+   private static final long serialVersionUID = 4842874368447237513L;
 
    private CompositionContext compositionContext;
+   private String requestedTemplate;
+   private CompiledTemplateResource compiledView;
 
-   private Node inside;
-
-   public ExtendsNode()
-   {
-      super();
-      this.terminus = new TerminalNode();
-   }
+   private char[] includeExpression;
+   private char[] preExpression;
 
    @Override
    public void setContents(final char[] contents)
    {
-      super.setContents(contents);
+      int mark;
+      this.includeExpression = ParseTools.subset(contents, 0, mark = TemplateTools.captureToEOS(contents, 0));
+      if (mark != contents.length)
+         this.preExpression = ParseTools.subset(contents, ++mark, contents.length - mark);
       setup();
+      this.contents = contents;
    }
 
    private void setup()
    {
       // This is processed when the @extends{} node is found and initialized
-      requestedTemplate = new String(contents).trim();
+      requestedTemplate = new String(includeExpression).trim();
       if (requestedTemplate.isEmpty())
       {
          throw new CompileException("@" + getName()
@@ -81,35 +72,33 @@ public class ExtendsNode extends ContextualNode
                compositionContext.getTemplateRegistry(),
                compositionContext.getTemplateResource());
       CompositionContext.push(compositionContext);
-
+      /*
+       * TODO a TemplateCache system could be used to handle dynamic template includes/extends
+       * 
+       * Pre-compile template expression Load compiled template from cache based on result of expression See:
+       * MVEL.compileExpression(...)
+       */
       TemplateCompiler compiler = compositionContext.getTemplateCompiler();
       compiledView = compiler.compileRelative(compositionContext.getTemplateResource(), requestedTemplate);
+      CompositionContext.pop();
    }
 
-   @Override
    @SuppressWarnings("unchecked")
+   @Override
    public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
             final VariableResolverFactory factory)
    {
-      Map<Object, Object> context = (Map<Object, Object>) ctx;
-
-      Node n = inside.next;
-      while ((n != terminus) && (n != null))
+      if (this.preExpression != null)
       {
-         n = n.next;
+         MVEL.eval(preExpression, ctx, factory);
       }
-      Node saved = null;
-      if (n != null)
-      {
-         saved = n.next;
-         n.next = null;
-      }
-      inside.eval(runtime, new NullTemplateOutputStream(), ctx, factory);
-      next = saved;
 
       compositionContext.setTemplateRuntime(runtime);
       CompositionContext.push(compositionContext);
+
+      Map<Object, Object> context = (Map<Object, Object>) ctx;
       compiledView.render(runtime, appender, context, factory);
+
       CompositionContext.pop();
 
       return next != null ? next.eval(runtime, appender, ctx, factory) : null;
@@ -118,16 +107,7 @@ public class ExtendsNode extends ContextualNode
    @Override
    public boolean demarcate(final Node terminatingNode, final char[] template)
    {
-      inside = next;
-      next = terminus;
-      CompositionContext.pop();
-      return true;
-   }
-
-   @Override
-   public boolean isOpenNode()
-   {
-      return true;
+      return false;
    }
 
 }

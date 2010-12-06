@@ -1,2 +1,3 @@
 org.jboss.seam.render.template.resolver.ClassLoaderTemplateResolver
+org.jboss.seam.render.template.resolver.MetaInfClassLoaderTemplateResolver
 org.jboss.seam.render.template.resolver.FileTemplateResolver

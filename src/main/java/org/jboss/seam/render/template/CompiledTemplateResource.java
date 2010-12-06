@@ -24,12 +24,13 @@ package org.jboss.seam.render.template;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.seam.render.TemplateCompiler;
 import org.jboss.seam.render.spi.TemplateResource;
+import org.jboss.seam.render.template.compiler.CustomTemplateCompiler;
 import org.jboss.seam.render.util.Assert;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.CompiledTemplate;
-import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.mvel2.templates.res.Node;
@@ -43,6 +44,7 @@ import org.mvel2.templates.util.TemplateOutputStream;
  */
 public class CompiledTemplateResource
 {
+   // TODO template resources should probably know if their underlying files have changed
 
    private final CompiledTemplate template;
    private final VariableResolverFactory factory;
@@ -52,10 +54,12 @@ public class CompiledTemplateResource
             final TemplateResource<?> resource,
             final Map<String, Class<? extends Node>> nodes)
    {
-      this(context.getVariableResolverFactory(), context.getTemplateRegistry(), resource, nodes);
+      this(context.getTemplateCompiler(), context.getVariableResolverFactory(), context.getTemplateRegistry(),
+               resource, nodes);
    }
 
-   public CompiledTemplateResource(final VariableResolverFactory factory,
+   public CompiledTemplateResource(final TemplateCompiler templateCompiler,
+            final VariableResolverFactory factory,
             final TemplateRegistry registry,
             final TemplateResource<?> resource,
             final Map<String, Class<? extends Node>> nodes)
@@ -74,16 +78,16 @@ public class CompiledTemplateResource
       }
       else
       {
-         CompositionContext.push(new CompositionContext(factory, registry, resource));
+         CompositionContext.push(new CompositionContext(templateCompiler, factory, registry, resource));
       }
 
       if (nodes == null)
       {
-         template = TemplateCompiler.compileTemplate(resource.getInputStream());
+         template = CustomTemplateCompiler.compileTemplate(resource.getInputStream());
       }
       else
       {
-         template = TemplateCompiler.compileTemplate(resource.getInputStream(), nodes);
+         template = CustomTemplateCompiler.compileTemplate(resource.getInputStream(), nodes);
       }
       CompositionContext.pop();
    }
@@ -98,7 +102,7 @@ public class CompiledTemplateResource
             final Map<Object, Object> context,
             final VariableResolverFactory factory)
    {
-      String result = (String) TemplateRuntime.execute(template, context, runtime.getNamedTemplateRegistry());
+      String result = (String) TemplateRuntime.execute(template, context, factory, runtime.getNamedTemplateRegistry());
       appender.append(result);
    }
 

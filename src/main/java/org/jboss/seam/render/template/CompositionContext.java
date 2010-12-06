@@ -23,7 +23,9 @@ package org.jboss.seam.render.template;
 
 import java.util.Stack;
 
+import org.jboss.seam.render.TemplateCompiler;
 import org.jboss.seam.render.spi.TemplateResource;
+import org.jboss.seam.render.util.Assert;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
@@ -35,8 +37,9 @@ import org.mvel2.templates.TemplateRuntime;
 public class CompositionContext extends TemplateContext<String, Definition>
 {
    private final CompositionContext context;
-   private final TemplateResource<?> resource;
+   private final TemplateCompiler templateCompiler;
    private final VariableResolverFactory variableResolverFactory;
+   private final TemplateResource<?> resource;
    private final TemplateRegistry templateRegistry;
    private TemplateRuntime templateRuntime;
 
@@ -48,10 +51,17 @@ public class CompositionContext extends TemplateContext<String, Definition>
       stack.set(new Stack<CompositionContext>());
    }
 
-   public CompositionContext(final VariableResolverFactory factory,
+   public CompositionContext(final TemplateCompiler templateCompiler,
+            final VariableResolverFactory factory,
             final TemplateRegistry registry,
             final TemplateResource<?> resource)
    {
+      Assert.notNull(templateCompiler, "TemplateCompiler must not be null.");
+      Assert.notNull(factory, "VariableResolverFactory must not be null.");
+      Assert.notNull(registry, "TemplateRegistry must not be null.");
+      Assert.notNull(resource, "TemplateResource must not be null.");
+
+      this.templateCompiler = templateCompiler;
       this.context = null;
       this.variableResolverFactory = factory;
       this.templateRegistry = registry;
@@ -62,6 +72,10 @@ public class CompositionContext extends TemplateContext<String, Definition>
             final TemplateResource<?> resource,
             final CompositionContext context)
    {
+      Assert.notNull(resource, "TemplateResource must not be null.");
+      Assert.notNull(context, "CompositionContext must not be null.");
+
+      this.templateCompiler = context.getTemplateCompiler();
       this.variableResolverFactory = context.getVariableResolverFactory();
       this.templateRegistry = context.getTemplateRegistry();
       this.templateRuntime = context.getTemplateRuntime();
@@ -127,5 +141,10 @@ public class CompositionContext extends TemplateContext<String, Definition>
    public void setTemplateRuntime(final TemplateRuntime templateRuntime)
    {
       this.templateRuntime = templateRuntime;
+   }
+
+   public TemplateCompiler getTemplateCompiler()
+   {
+      return templateCompiler;
    }
 }

@@ -58,12 +58,16 @@ public class TemplateResolverFactory implements TemplateResolver<Object>
       for (TemplateResolver<?> resolver : addedResolvers)
       {
          resource = resolver.resolve(target);
+         if (resource != null)
+            break;
       }
       if (resource == null)
       {
          for (TemplateResolver<?> resolver : resolvers)
          {
             resource = resolver.resolve(target);
+            if (resource != null)
+               break;
          }
       }
 
@@ -89,6 +93,10 @@ public class TemplateResolverFactory implements TemplateResolver<Object>
                         + origin.getPath() + "]");
       TemplateResolver resolver = origin.getResolvedBy();
       TemplateResource result = resolver.resolveRelative(origin, relativePath);
+      if (result == null)
+      {
+         result = resolve(relativePath);
+      }
 
       if (result == null)
       {

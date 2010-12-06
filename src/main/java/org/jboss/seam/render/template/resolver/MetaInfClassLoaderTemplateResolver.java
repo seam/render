@@ -21,59 +21,30 @@
  */
 package org.jboss.seam.render.template.resolver;
 
-import org.jboss.seam.render.spi.TemplateResolver;
 import org.jboss.seam.render.spi.TemplateResource;
 import org.jboss.seam.render.util.Assert;
-import org.jboss.seam.render.util.Paths;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ClassLoaderTemplateResolver implements TemplateResolver<ClassLoader>
+public class MetaInfClassLoaderTemplateResolver extends ClassLoaderTemplateResolver
 {
-   private final ClassLoader loader;
-
-   public ClassLoaderTemplateResolver()
+   public MetaInfClassLoaderTemplateResolver()
    {
-      this.loader = getClass().getClassLoader();
+      super();
    }
 
-   public ClassLoaderTemplateResolver(final ClassLoader loader)
+   public MetaInfClassLoaderTemplateResolver(final ClassLoader loader)
    {
-      Assert.notNull(loader, "ClassLoader must not be null.");
-      this.loader = loader;
+      super(loader);
    }
 
    @Override
-   public TemplateResource<ClassLoader> resolve(final String path)
+   public TemplateResource<ClassLoader> resolve(String path)
    {
       Assert.notNull(path, "Resource path must not be null.");
-      if (isValid(path))
-      {
-         return new ClassLoaderTemplateResource(this, loader, path);
-      }
-      return null;
-   }
-
-   @Override
-   public TemplateResource<ClassLoader> resolveRelative(final TemplateResource<ClassLoader> origin,
-            final String relativePath)
-   {
-      Assert.notNull(origin, "Origin resource must not be null.");
-      Assert.notNull(relativePath, "Relative resource path must not be null.");
-      String path = origin.getPath();
-      path = Paths.calculateRelativePath(path, relativePath);
-
-      if (isValid(path))
-      {
-         return new ClassLoaderTemplateResource(this, loader, path);
-      }
-      return null;
-   }
-
-   private boolean isValid(final String target)
-   {
-      return loader.getResource(target) != null;
+      path = "META-INF/" + path;
+      return super.resolve(path);
    }
 
 }

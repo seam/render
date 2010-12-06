@@ -31,6 +31,7 @@ import org.jboss.seam.render.spi.TemplateResource;
 import org.jboss.seam.render.template.CompiledTemplateResource;
 import org.jboss.seam.render.template.nodes.DefineNode;
 import org.jboss.seam.render.template.nodes.ExtendsNode;
+import org.jboss.seam.render.template.nodes.IncludeNode;
 import org.jboss.seam.render.template.nodes.InsertNode;
 import org.jboss.seam.render.template.nodes.ParamNode;
 import org.jboss.seam.render.template.resolver.TemplateResolutionException;
@@ -43,7 +44,6 @@ import org.mvel2.templates.res.Node;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public class TemplateCompiler
 {
@@ -64,6 +64,7 @@ public class TemplateCompiler
       addNode("extends", ExtendsNode.class);
       addNode("define", DefineNode.class);
       addNode("insert", InsertNode.class);
+      addNode("include", IncludeNode.class);
       // create a map resolve to hold the functions we want to inject, and chain
       // the ELVariableResolverFactory to this factory.
    }
@@ -89,7 +90,8 @@ public class TemplateCompiler
       return compile(resource, nodes);
    }
 
-   public CompiledTemplateResource compile(final TemplateResource<?> templateResource) throws TemplateResolutionException
+   public CompiledTemplateResource compile(final TemplateResource<?> templateResource)
+            throws TemplateResolutionException
    {
       Assert.notNull(templateResource, "Cannot compile a null TemplateResource.");
       Map<String, Class<? extends Node>> nodes = getNodes();
@@ -100,7 +102,8 @@ public class TemplateCompiler
    public CompiledTemplateResource compile(final TemplateResource<?> templateResource,
             final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException
    {
-      CompiledTemplateResource view = new CompiledTemplateResource(variableFactory, registry, templateResource, nodes);
+      CompiledTemplateResource view = new CompiledTemplateResource(this, variableFactory, registry, templateResource,
+               nodes);
       return view;
    }
 
