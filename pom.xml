@@ -3,6 +3,13 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
+   
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>15</version>
+   </parent>
+   
    <groupId>org.jboss.seam.render</groupId>
    <artifactId>seam-render</artifactId>
    <version>1.0.0-SNAPSHOT</version>
@@ -26,16 +33,38 @@
    <properties>
       <arquillian.version>1.0.0.Alpha4</arquillian.version>
       <jboss.logging.version>3.0.0.Beta4</jboss.logging.version>
+      <cdi.version>1.0-SP2</cdi.version>
       <weld.version>1.1.0.Beta1</weld.version>
+      <slf4j.version>1.5.10</slf4j.version>
    </properties>
 
    <dependencies>
 
       <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+         <version>${cdi.version}</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
          <groupId>org.mvel</groupId>
          <artifactId>mvel2</artifactId>
          <version>2.0.18</version>
       </dependency>
+
+      <dependency>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>el-impl</artifactId>
+         <version>2.2</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.logging</groupId>
+         <artifactId>jboss-logging</artifactId>
+         <version>${jboss.logging.version}</version>
+         <scope>provided</scope>
+      </dependency>
+      
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-extensions</artifactId>
@@ -50,19 +79,6 @@
                <artifactId>jta</artifactId>
             </exclusion>
          </exclusions>
-      </dependency>
-      <dependency>
-         <groupId>org.jboss.logging</groupId>
-         <artifactId>jboss-logging</artifactId>
-         <version>${jboss.logging.version}</version>
-      </dependency>
-
-
-      <dependency>
-         <groupId>org.glassfish.web</groupId>
-         <artifactId>el-impl</artifactId>
-         <version>2.2</version>
-         <scope>test</scope>
       </dependency>
 
       <!-- Test Deps -->
@@ -87,11 +103,13 @@
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-core</artifactId>
+         <version>${weld.version}</version>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-simple</artifactId>
+         <version>${slf4j.version}</version>
          <scope>test</scope>
       </dependency>
    </dependencies>
@@ -101,7 +119,7 @@
          <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-bom</artifactId>
-            <version>1.1.0.Beta1</version>
+            <version>${weld.version}</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
