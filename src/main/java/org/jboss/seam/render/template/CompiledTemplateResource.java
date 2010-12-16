@@ -37,14 +37,16 @@ import org.mvel2.templates.res.Node;
 import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
- * A {@link TemplateResource} that has been compiled and is ready to be rendered.
+ * A {@link TemplateResource} that has been compiled and is ready to be
+ * rendered.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public class CompiledTemplateResource
 {
-   // TODO template resources should probably know if their underlying files have changed
+   // TODO template resources should probably know if their underlying files
+   // have changed
 
    private final CompiledTemplate template;
    private final VariableResolverFactory factory;
@@ -90,6 +92,12 @@ public class CompiledTemplateResource
          template = CustomTemplateCompiler.compileTemplate(resource.getInputStream(), nodes);
       }
       CompositionContext.pop();
+   }
+
+   public String render()
+   {
+      String result = (String) TemplateRuntime.execute(template, new HashMap<Object, Object>(), factory, registry);
+      return result;
    }
 
    public String render(final Map<Object, Object> context)
