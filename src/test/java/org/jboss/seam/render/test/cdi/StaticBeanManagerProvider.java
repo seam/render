@@ -23,7 +23,7 @@ package org.jboss.seam.render.test.cdi;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.extensions.beanManager.BeanManagerProvider;
+import org.jboss.seam.solder.beanManager.BeanManagerProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

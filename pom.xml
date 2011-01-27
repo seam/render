@@ -33,19 +33,13 @@
    <properties>
       <arquillian.version>1.0.0.Alpha4</arquillian.version>
       <jboss.logging.version>3.0.0.Beta4</jboss.logging.version>
-      <cdi.version>1.0-SP2</cdi.version>
-      <weld.version>1.1.0.Beta1</weld.version>
+      <cdi.version>1.0-SP4</cdi.version>
+      <weld.version>1.1.0.Final</weld.version>
       <slf4j.version>1.5.10</slf4j.version>
    </properties>
 
    <dependencies>
 
-      <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
-         <version>${cdi.version}</version>
-         <scope>provided</scope>
-      </dependency>
       <dependency>
          <groupId>org.mvel</groupId>
          <artifactId>mvel2</artifactId>
@@ -66,19 +60,15 @@
       </dependency>
       
       <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-extensions</artifactId>
-         <version>1.0.0.Beta1</version>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.el</groupId>
-               <artifactId>el-api</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>javax.transaction</groupId>
-               <artifactId>jta</artifactId>
-            </exclusion>
-         </exclusions>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+         <version>${cdi.version}</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.seam.solder</groupId>
+         <artifactId>seam-solder</artifactId>
+         <version>3.0.0.Beta2</version>
       </dependency>
 
       <!-- Test Deps -->
@@ -95,9 +85,9 @@
          <scope>test</scope>
       </dependency>
       <dependency>
-         <groupId>org.jboss.arquillian.container</groupId>
-         <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-         <version>${arquillian.version}</version>
+         <groupId>org.jboss.weld.arquillian.container</groupId>
+         <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+         <version>${weld.version}</version>
          <scope>test</scope>
       </dependency>
       <dependency>
@@ -111,6 +101,14 @@
          <artifactId>slf4j-simple</artifactId>
          <version>${slf4j.version}</version>
          <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.spec</groupId>
+         <artifactId>jboss-javaee-6.0</artifactId>
+         <version>1.0.0.CR1</version>
+         <scope>provided</scope>
+         <type>pom</type>
       </dependency>
    </dependencies>
 
