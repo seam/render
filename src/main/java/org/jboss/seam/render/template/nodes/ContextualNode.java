@@ -24,7 +24,7 @@ package org.jboss.seam.render.template.nodes;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.seam.render.util.BeanManagerUtils;
-import org.jboss.weld.extensions.beanManager.BeanManagerAccessor;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.mvel2.templates.res.Node;
 
 /**
@@ -55,7 +55,7 @@ public abstract class ContextualNode extends Node
 
    private void init()
    {
-      BeanManager manager = BeanManagerAccessor.getBeanManager();
+      BeanManager manager = new BeanManagerLocator().getBeanManager();
       BeanManagerUtils.injectNonContextualInstance(manager, this);
    }
 

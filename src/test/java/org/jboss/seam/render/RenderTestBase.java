@@ -23,6 +23,7 @@ package org.jboss.seam.render;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.seam.solder.el.Expressions;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
@@ -41,8 +42,9 @@ public abstract class RenderTestBase
    {
       JavaArchive deployment = ShrinkWrap.create(JavaArchive.class)
                .addPackages(true, Root.class.getPackage())
+               .addPackages(true, Expressions.class.getPackage())
                .addManifestResource(new ByteArrayAsset("<beans/>".getBytes()), ArchivePaths.create("beans.xml"))
-               .addManifestResource("META-INF/services/org.jboss.weld.extensions.beanManager.BeanManagerProvider");
+               .addManifestResource("META-INF/services/org.jboss.seam.solder.beanManager.BeanManagerProvider");
       return deployment;
    }
 }

@@ -21,7 +21,7 @@
  */
 package org.jboss.seam.render.spi;
 
-import org.jboss.weld.extensions.util.service.ServiceLoader;
+import org.jboss.seam.solder.util.service.ServiceLoader;
 
 /**
  * Defines a strategy for resolving {@link TemplateResource} assets. Additional resolvers can be registering using the

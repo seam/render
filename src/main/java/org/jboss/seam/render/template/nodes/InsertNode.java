@@ -61,7 +61,7 @@ public class InsertNode extends ContextualNode
 
       if (tokens.isEmpty())
       {
-         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + line + "}");
+         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + line + "}", new char[] {}, 0);
       }
 
       CompositionContext context = CompositionContext.peek();

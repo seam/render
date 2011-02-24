@@ -29,7 +29,7 @@ import javax.inject.Singleton;
 import org.jboss.seam.render.spi.TemplateResolver;
 import org.jboss.seam.render.spi.TemplateResource;
 import org.jboss.seam.render.util.Assert;
-import org.jboss.weld.extensions.util.service.ServiceLoader;
+import org.jboss.seam.solder.util.service.ServiceLoader;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

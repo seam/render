@@ -24,7 +24,7 @@ package org.jboss.seam.render.template;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 
-import org.jboss.weld.extensions.el.Expressions;
+import org.jboss.seam.solder.el.Expressions;
 import org.mvel2.integration.VariableResolver;
 
 /**
