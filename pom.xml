@@ -138,4 +138,10 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<scm>
+		<connection>scm:git:git://github.com/lincolnthree/seam-solder.git</connection>
+		<developerConnection>scm:git:git@github.com:lincolnthree/seam-solder.git</developerConnection>
+		<url>http://github.com/lincolnthree/seam-solder</url>
+	</scm>
 </project>
