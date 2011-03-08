@@ -21,6 +21,7 @@
  */
 package org.jboss.seam.render.template;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +38,7 @@ import org.mvel2.templates.res.Node;
 import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
- * A {@link TemplateResource} that has been compiled and is ready to be
- * rendered.
+ * A {@link TemplateResource} that has been compiled and is ready to be rendered.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -83,13 +83,20 @@ public class CompiledTemplateResource
          CompositionContext.push(new CompositionContext(templateCompiler, factory, registry, resource));
       }
 
+      InputStream stream = resource.getInputStream();
+      if (stream == null)
+      {
+         throw new IllegalStateException("TemplateResource.getInputStream() was null for resource with path: ["
+                  + resource.getPath() + "]");
+      }
+
       if (nodes == null)
       {
-         template = CustomTemplateCompiler.compileTemplate(resource.getInputStream());
+         template = CustomTemplateCompiler.compileTemplate(stream);
       }
       else
       {
-         template = CustomTemplateCompiler.compileTemplate(resource.getInputStream(), nodes);
+         template = CustomTemplateCompiler.compileTemplate(stream, nodes);
       }
       CompositionContext.pop();
    }

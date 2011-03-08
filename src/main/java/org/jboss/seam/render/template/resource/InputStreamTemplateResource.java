@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -19,11 +19,9 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.seam.render.template.resolver;
+package org.jboss.seam.render.template.resource;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLConnection;
 
 import org.jboss.seam.render.spi.TemplateResolver;
 import org.jboss.seam.render.spi.TemplateResource;
@@ -32,23 +30,32 @@ import org.jboss.seam.render.spi.TemplateResource;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class ClassLoaderTemplateResource implements TemplateResource<ClassLoader>
+public class InputStreamTemplateResource implements TemplateResource<InputStream>
 {
+   private final InputStream template;
+   private final TemplateResolver<InputStream> resolvedBy;
+   private String path = "";
 
-   private final ClassLoaderTemplateResolver resolver;
-   private final ClassLoader loader;
-   private final String path;
-
-   /**
-    * @param classLoaderTemplateResolver
-    * @param resource
-    */
-   public ClassLoaderTemplateResource(final ClassLoaderTemplateResolver resolver, final ClassLoader loader,
+   public InputStreamTemplateResource(final TemplateResolver<InputStream> resolvedBy, final InputStream template,
             final String path)
    {
-      this.resolver = resolver;
-      this.loader = loader;
+      this.template = template;
+      this.resolvedBy = resolvedBy;
       this.path = path;
+   }
+
+   public InputStreamTemplateResource(final InputStream template, final String path)
+   {
+      this.template = template;
+      this.resolvedBy = null;
+      this.path = path;
+   }
+
+   public InputStreamTemplateResource(final InputStream template)
+   {
+      this.template = template;
+      this.resolvedBy = null;
+      this.path = null;
    }
 
    @Override
@@ -60,34 +67,25 @@ public class ClassLoaderTemplateResource implements TemplateResource<ClassLoader
    @Override
    public InputStream getInputStream()
    {
-      return loader.getResourceAsStream(path);
-   }
-
-   @Override
-   public ClassLoader getUnderlyingResource()
-   {
-      return loader;
-   }
-
-   @Override
-   public TemplateResolver<ClassLoader> getResolvedBy()
-   {
-      return resolver;
+      return template;
    }
 
    @Override
    public long getLastModified()
    {
-      URLConnection connection = null;
-      try
-      {
-         connection = loader.getResource(path).openConnection();
-         return connection.getLastModified();
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException("Could not determine last modified time for resource [" + path + "]", e);
-      }
+      return 0;
+   }
+
+   @Override
+   public InputStream getUnderlyingResource()
+   {
+      return template;
+   }
+
+   @Override
+   public TemplateResolver<InputStream> getResolvedBy()
+   {
+      return resolvedBy;
    }
 
 }

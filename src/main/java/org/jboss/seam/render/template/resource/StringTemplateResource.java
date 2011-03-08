@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -19,11 +19,9 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.seam.render.template.resolver;
+package org.jboss.seam.render.template.resource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.jboss.seam.render.spi.TemplateResolver;
@@ -33,53 +31,61 @@ import org.jboss.seam.render.spi.TemplateResource;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class FileTemplateResource implements TemplateResource<File>
+public class StringTemplateResource implements TemplateResource<String>
 {
-   private final File resource;
-   private final TemplateResolver<File> resolvedBy;
+   private final String template;
+   private final TemplateResolver<String> resolvedBy;
+   private String path = "";
 
-   public FileTemplateResource(final File file, final TemplateResolver<File> resolvedBy)
+   public StringTemplateResource(final TemplateResolver<String> resolvedBy, final String template, final String path)
    {
-      this.resource = file;
+      this.template = template;
       this.resolvedBy = resolvedBy;
+      this.path = path;
    }
 
-   @Override
-   public File getUnderlyingResource()
+   public StringTemplateResource(final String template, final String path)
    {
-      return resource;
+      this.template = template;
+      this.resolvedBy = null;
+      this.path = path;
+   }
+
+   public StringTemplateResource(final String template)
+   {
+      this.template = template;
+      this.resolvedBy = null;
+      this.path = null;
    }
 
    @Override
    public String getPath()
    {
-      return resource.getAbsolutePath();
+      return path;
    }
 
    @Override
    public InputStream getInputStream()
    {
-      try
-      {
-         return new FileInputStream(resource);
-      }
-      catch (FileNotFoundException e)
-      {
-         throw new RuntimeException("Could not open " + this.getClass().getSimpleName() + " at ["
-                  + resource.getAbsolutePath() + "]", e);
-      }
-   }
-
-   @Override
-   public TemplateResolver<File> getResolvedBy()
-   {
-      return resolvedBy;
+      return new ByteArrayInputStream(template.getBytes());
    }
 
    @Override
    public long getLastModified()
    {
-      return resource.lastModified();
+      return 0;
+   }
+
+   @Override
+   public String getUnderlyingResource()
+   {
+      return template;
+   }
+
+   @Override
+   public TemplateResolver<String> getResolvedBy()
+   {
+      return resolvedBy;
    }
 
 }

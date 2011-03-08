@@ -23,6 +23,7 @@ package org.jboss.seam.render.template.resolver;
 
 import org.jboss.seam.render.spi.TemplateResolver;
 import org.jboss.seam.render.spi.TemplateResource;
+import org.jboss.seam.render.template.resource.ClassLoaderTemplateResource;
 import org.jboss.seam.render.util.Assert;
 import org.jboss.seam.render.util.Paths;
 

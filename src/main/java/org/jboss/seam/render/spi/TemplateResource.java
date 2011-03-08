@@ -23,21 +23,39 @@ package org.jboss.seam.render.spi;
 
 import java.io.InputStream;
 
+import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
+
 /**
- * Handle to a templatable resource.
+ * Handle to a template-able resource.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public interface TemplateResource<T>
 {
+   /**
+    * Get the unique path at which this resource can be located. A resource with a null path cannot be located by the
+    * {@link TemplateResolverFactory}.
+    */
    String getPath();
 
+   /**
+    * Get the underlying data for this {@link TemplateResource} in the form of an {@link InputStream}.
+    */
    InputStream getInputStream();
 
+   /**
+    * Get the last modified time of this resource. If zero, the last modified time is not available.
+    */
    long getLastModified();
 
+   /**
+    * Get the underlying {@link T} resource object for this {@link TemplateResource}
+    */
    T getUnderlyingResource();
 
+   /**
+    * Get the {@link TemplateResolver} with which this {@link TemplateResource} was resolved.
+    */
    TemplateResolver<T> getResolvedBy();
 }
