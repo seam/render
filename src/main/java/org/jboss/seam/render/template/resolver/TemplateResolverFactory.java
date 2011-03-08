@@ -91,8 +91,15 @@ public class TemplateResolverFactory implements TemplateResolver<Object>
                relativePath,
                "Relative resource path must not be null when attempting to resolve from base resource ["
                         + origin.getPath() + "]");
+
+      TemplateResource result = null;
       TemplateResolver resolver = origin.getResolvedBy();
-      TemplateResource result = resolver.resolveRelative(origin, relativePath);
+
+      if (resolver != null)
+      {
+         result = resolver.resolveRelative(origin, relativePath);
+      }
+
       if (result == null)
       {
          result = resolve(relativePath);
