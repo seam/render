@@ -24,8 +24,6 @@ package org.jboss.seam.render.template.resolver;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.inject.Singleton;
-
 import org.jboss.seam.render.spi.TemplateResolver;
 import org.jboss.seam.render.spi.TemplateResource;
 import org.jboss.seam.render.util.Assert;
@@ -35,11 +33,11 @@ import org.jboss.seam.solder.util.service.ServiceLoader;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-@Singleton
 @SuppressWarnings("rawtypes")
 public class TemplateResolverFactory implements TemplateResolver<Object>
 {
-   ServiceLoader<TemplateResolver> resolvers = null;
+   // TODO evaluate this. it might not be a good idea to use static here
+   private static ServiceLoader<TemplateResolver> resolvers = null;
 
    Set<TemplateResolver> addedResolvers = new HashSet<TemplateResolver>();
 
@@ -115,7 +113,7 @@ public class TemplateResolverFactory implements TemplateResolver<Object>
       return result;
    }
 
-   private void loadResolvers()
+   private synchronized void loadResolvers()
    {
       if (resolvers == null)
       {
