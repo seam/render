@@ -70,7 +70,7 @@ public class DefineNode extends ContextualNode
       String key = new String(contents);
       if (key.isEmpty())
       {
-         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + key + "}");
+         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + key + "}", new char[] {}, 0);
       }
 
       CompositionContext context = CompositionContext.peek();

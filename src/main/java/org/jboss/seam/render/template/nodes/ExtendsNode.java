@@ -71,7 +71,7 @@ public class ExtendsNode extends ContextualNode
       {
          throw new CompileException("@" + getName()
                   + "{ ...template... } requires 1 parameter, instead received @" + getName() + "{"
-                  + requestedTemplate + "}");
+                  + requestedTemplate + "}", new char[] {}, 0);
       }
 
       compositionContext = CompositionContext.peek();

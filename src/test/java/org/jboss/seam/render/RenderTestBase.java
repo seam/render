@@ -42,8 +42,9 @@ public abstract class RenderTestBase
    {
       JavaArchive deployment = ShrinkWrap.create(JavaArchive.class)
                .addPackages(true, Root.class.getPackage())
+               .addPackages(true, Expressions.class.getPackage())
                .addManifestResource(new ByteArrayAsset("<beans/>".getBytes()), ArchivePaths.create("beans.xml"))
-               .addPackages(false, Expressions.class.getPackage());
+               .addManifestResource("META-INF/services/org.jboss.seam.solder.beanManager.BeanManagerProvider");
       return deployment;
    }
 }

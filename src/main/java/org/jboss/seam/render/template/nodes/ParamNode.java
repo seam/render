@@ -58,7 +58,7 @@ public class ParamNode extends ContextualNode
       {
          throw new CompileException("@" + getName()
                   + "{ param " + DELIM + " value } requires two parameters, instead received @" + getName()
-                  + "{" + line + "}");
+                  + "{" + line + "}", new char[] {}, 0);
       }
 
       String name = tokens.remove().trim();
