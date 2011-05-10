@@ -24,30 +24,24 @@ package org.jboss.seam.render.template.resolver;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class TemplateResolutionException extends RuntimeException
-{
-   private static final long serialVersionUID = -6912613014462282692L;
+public class TemplateResolutionException extends RuntimeException {
+    private static final long serialVersionUID = -6912613014462282692L;
 
-   public TemplateResolutionException()
-   {
-      super();
-   }
+    public TemplateResolutionException() {
+        super();
+    }
 
-   public TemplateResolutionException(final String message, final Throwable e)
-   {
-      super(message, e);
-   }
+    public TemplateResolutionException(final String message, final Throwable e) {
+        super(message, e);
+    }
 
-   public TemplateResolutionException(final String message)
-   {
-      super(message);
-   }
+    public TemplateResolutionException(final String message) {
+        super(message);
+    }
 
-   public TemplateResolutionException(final Throwable e)
-   {
-      super(e);
-   }
+    public TemplateResolutionException(final Throwable e) {
+        super(e);
+    }
 
 }

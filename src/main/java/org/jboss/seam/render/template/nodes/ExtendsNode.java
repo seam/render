@@ -36,98 +36,87 @@ import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class ExtendsNode extends ContextualNode
-{
-   private static final long serialVersionUID = -9214745288595708748L;
+public class ExtendsNode extends ContextualNode {
+    private static final long serialVersionUID = -9214745288595708748L;
 
-   private String requestedTemplate;
+    private String requestedTemplate;
 
-   private CompiledTemplateResource compiledView;
+    private CompiledTemplateResource compiledView;
 
-   private CompositionContext compositionContext;
+    private CompositionContext compositionContext;
 
-   private Node inside;
+    private Node inside;
 
-   public ExtendsNode()
-   {
-      super();
-      this.terminus = new TerminalNode();
-   }
+    public ExtendsNode() {
+        super();
+        this.terminus = new TerminalNode();
+    }
 
-   @Override
-   public void setContents(final char[] contents)
-   {
-      super.setContents(contents);
-      setup();
-   }
+    @Override
+    public void setContents(final char[] contents) {
+        super.setContents(contents);
+        setup();
+    }
 
-   private void setup()
-   {
-      // This is processed when the @extends{} node is found and initialized
-      requestedTemplate = new String(contents).trim();
-      if (requestedTemplate.isEmpty())
-      {
-         throw new CompileException("@" + getName()
-                  + "{ ...template... } requires 1 parameter, instead received @" + getName() + "{"
-                  + requestedTemplate + "}", new char[] {}, 0);
-      }
+    private void setup() {
+        // This is processed when the @extends{} node is found and initialized
+        requestedTemplate = new String(contents).trim();
+        if (requestedTemplate.isEmpty()) {
+            throw new CompileException("@" + getName()
+                    + "{ ...template... } requires 1 parameter, instead received @" + getName() + "{"
+                    + requestedTemplate + "}", new char[]{}, 0);
+        }
 
-      compositionContext = CompositionContext.peek();
-      compositionContext = new CompositionContext(
-               compositionContext.getTemplateCompiler(),
-               compositionContext.getVariableResolverFactory(),
-               compositionContext.getTemplateRegistry(),
-               compositionContext.getTemplateResource());
-      CompositionContext.push(compositionContext);
+        compositionContext = CompositionContext.peek();
+        compositionContext = new CompositionContext(
+                compositionContext.getTemplateCompiler(),
+                compositionContext.getVariableResolverFactory(),
+                compositionContext.getTemplateRegistry(),
+                compositionContext.getTemplateResource());
+        CompositionContext.push(compositionContext);
 
-      TemplateCompiler compiler = compositionContext.getTemplateCompiler();
-      compiledView = compiler.compileRelative(compositionContext.getTemplateResource(), requestedTemplate);
-   }
+        TemplateCompiler compiler = compositionContext.getTemplateCompiler();
+        compiledView = compiler.compileRelative(compositionContext.getTemplateResource(), requestedTemplate);
+    }
 
-   @Override
-   @SuppressWarnings("unchecked")
-   public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
-            final VariableResolverFactory factory)
-   {
-      Map<Object, Object> context = (Map<Object, Object>) ctx;
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
+                       final VariableResolverFactory factory) {
+        Map<Object, Object> context = (Map<Object, Object>) ctx;
 
-      Node n = inside.next;
-      while ((n != terminus) && (n != null))
-      {
-         n = n.next;
-      }
-      Node saved = null;
-      if (n != null)
-      {
-         saved = n.next;
-         n.next = null;
-      }
-      inside.eval(runtime, new NullTemplateOutputStream(), ctx, factory);
-      next = saved;
+        Node n = inside.next;
+        while ((n != terminus) && (n != null)) {
+            n = n.next;
+        }
+        Node saved = null;
+        if (n != null) {
+            saved = n.next;
+            n.next = null;
+        }
+        inside.eval(runtime, new NullTemplateOutputStream(), ctx, factory);
+        next = saved;
 
-      compositionContext.setTemplateRuntime(runtime);
-      CompositionContext.push(compositionContext);
-      compiledView.render(runtime, appender, context, factory);
-      CompositionContext.pop();
+        compositionContext.setTemplateRuntime(runtime);
+        CompositionContext.push(compositionContext);
+        compiledView.render(runtime, appender, context, factory);
+        CompositionContext.pop();
 
-      return next != null ? next.eval(runtime, appender, ctx, factory) : null;
-   }
+        return next != null ? next.eval(runtime, appender, ctx, factory) : null;
+    }
 
-   @Override
-   public boolean demarcate(final Node terminatingNode, final char[] template)
-   {
-      inside = next;
-      next = terminus;
-      CompositionContext.pop();
-      return true;
-   }
+    @Override
+    public boolean demarcate(final Node terminatingNode, final char[] template) {
+        inside = next;
+        next = terminus;
+        CompositionContext.pop();
+        return true;
+    }
 
-   @Override
-   public boolean isOpenNode()
-   {
-      return true;
-   }
+    @Override
+    public boolean isOpenNode() {
+        return true;
+    }
 
 }

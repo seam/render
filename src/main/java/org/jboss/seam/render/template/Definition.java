@@ -26,22 +26,18 @@ import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class Definition
-{
-   private final Node def;
+public class Definition {
+    private final Node def;
 
-   public Definition(final Node definition)
-   {
-      this.def = definition;
-   }
+    public Definition(final Node definition) {
+        this.def = definition;
+    }
 
-   public void eval(final CompositionContext compositionContext, final TemplateOutputStream stream,
-            final Object context)
-   {
-      def.eval(compositionContext.getTemplateRuntime(), stream, context,
-               compositionContext.getVariableResolverFactory());
-   }
+    public void eval(final CompositionContext compositionContext, final TemplateOutputStream stream,
+                     final Object context) {
+        def.eval(compositionContext.getTemplateRuntime(), stream, context,
+                compositionContext.getVariableResolverFactory());
+    }
 
 }

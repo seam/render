@@ -30,51 +30,43 @@ import org.jboss.seam.render.util.Paths;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ClassLoaderTemplateResolver implements TemplateResolver<ClassLoader>
-{
-   private final ClassLoader loader;
+public class ClassLoaderTemplateResolver implements TemplateResolver<ClassLoader> {
+    private final ClassLoader loader;
 
-   public ClassLoaderTemplateResolver()
-   {
-      this.loader = getClass().getClassLoader();
-   }
+    public ClassLoaderTemplateResolver() {
+        this.loader = getClass().getClassLoader();
+    }
 
-   public ClassLoaderTemplateResolver(final ClassLoader loader)
-   {
-      Assert.notNull(loader, "ClassLoader must not be null.");
-      this.loader = loader;
-   }
+    public ClassLoaderTemplateResolver(final ClassLoader loader) {
+        Assert.notNull(loader, "ClassLoader must not be null.");
+        this.loader = loader;
+    }
 
-   @Override
-   public TemplateResource<ClassLoader> resolve(final String path)
-   {
-      Assert.notNull(path, "Resource path must not be null.");
-      if (isValid(path))
-      {
-         return new ClassLoaderTemplateResource(this, loader, path);
-      }
-      return null;
-   }
+    @Override
+    public TemplateResource<ClassLoader> resolve(final String path) {
+        Assert.notNull(path, "Resource path must not be null.");
+        if (isValid(path)) {
+            return new ClassLoaderTemplateResource(this, loader, path);
+        }
+        return null;
+    }
 
-   @Override
-   public TemplateResource<ClassLoader> resolveRelative(final TemplateResource<ClassLoader> origin,
-            final String relativePath)
-   {
-      Assert.notNull(origin, "Origin resource must not be null.");
-      Assert.notNull(relativePath, "Relative resource path must not be null.");
-      String path = origin.getPath();
-      path = Paths.calculateRelativePath(path, relativePath);
+    @Override
+    public TemplateResource<ClassLoader> resolveRelative(final TemplateResource<ClassLoader> origin,
+                                                         final String relativePath) {
+        Assert.notNull(origin, "Origin resource must not be null.");
+        Assert.notNull(relativePath, "Relative resource path must not be null.");
+        String path = origin.getPath();
+        path = Paths.calculateRelativePath(path, relativePath);
 
-      if (isValid(path))
-      {
-         return new ClassLoaderTemplateResource(this, loader, path);
-      }
-      return null;
-   }
+        if (isValid(path)) {
+            return new ClassLoaderTemplateResource(this, loader, path);
+        }
+        return null;
+    }
 
-   private boolean isValid(final String target)
-   {
-      return loader.getResource(target) != null;
-   }
+    private boolean isValid(final String target) {
+        return loader.getResource(target) != null;
+    }
 
 }

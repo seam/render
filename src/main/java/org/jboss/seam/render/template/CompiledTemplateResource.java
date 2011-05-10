@@ -39,86 +39,72 @@ import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
  * A {@link TemplateResource} that has been compiled and is ready to be rendered.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class CompiledTemplateResource
-{
-   // TODO template resources should probably know if their underlying files
-   // have changed
+public class CompiledTemplateResource {
+    // TODO template resources should probably know if their underlying files
+    // have changed
 
-   private final CompiledTemplate template;
-   private final VariableResolverFactory factory;
-   private final TemplateRegistry registry;
+    private final CompiledTemplate template;
+    private final VariableResolverFactory factory;
+    private final TemplateRegistry registry;
 
-   public CompiledTemplateResource(final CompositionContext context,
-            final TemplateResource<?> resource,
-            final Map<String, Class<? extends Node>> nodes)
-   {
-      this(context.getTemplateCompiler(), context.getVariableResolverFactory(), context.getTemplateRegistry(),
-               resource, nodes);
-   }
+    public CompiledTemplateResource(final CompositionContext context,
+                                    final TemplateResource<?> resource,
+                                    final Map<String, Class<? extends Node>> nodes) {
+        this(context.getTemplateCompiler(), context.getVariableResolverFactory(), context.getTemplateRegistry(),
+                resource, nodes);
+    }
 
-   public CompiledTemplateResource(final TemplateCompiler templateCompiler,
-            final VariableResolverFactory factory,
-            final TemplateRegistry registry,
-            final TemplateResource<?> resource,
-            final Map<String, Class<? extends Node>> nodes)
-   {
-      Assert.notNull(factory, "VariableResolverFactory must not be null.");
-      Assert.notNull(registry, "TemplateRegistry must not be null.");
-      Assert.notNull(resource, "TemplateResource must not be null.");
+    public CompiledTemplateResource(final TemplateCompiler templateCompiler,
+                                    final VariableResolverFactory factory,
+                                    final TemplateRegistry registry,
+                                    final TemplateResource<?> resource,
+                                    final Map<String, Class<? extends Node>> nodes) {
+        Assert.notNull(factory, "VariableResolverFactory must not be null.");
+        Assert.notNull(registry, "TemplateRegistry must not be null.");
+        Assert.notNull(resource, "TemplateResource must not be null.");
 
-      this.factory = new MapVariableResolverFactory(new HashMap<String, Object>(), factory);
-      this.registry = registry;
+        this.factory = new MapVariableResolverFactory(new HashMap<String, Object>(), factory);
+        this.registry = registry;
 
-      CompositionContext context = CompositionContext.peek();
-      if (context != null)
-      {
-         CompositionContext.push(new CompositionContext(resource, context));
-      }
-      else
-      {
-         CompositionContext.push(new CompositionContext(templateCompiler, factory, registry, resource));
-      }
+        CompositionContext context = CompositionContext.peek();
+        if (context != null) {
+            CompositionContext.push(new CompositionContext(resource, context));
+        } else {
+            CompositionContext.push(new CompositionContext(templateCompiler, factory, registry, resource));
+        }
 
-      InputStream stream = resource.getInputStream();
-      if (stream == null)
-      {
-         throw new IllegalStateException("TemplateResource.getInputStream() was null for resource with path: ["
-                  + resource.getPath() + "]");
-      }
+        InputStream stream = resource.getInputStream();
+        if (stream == null) {
+            throw new IllegalStateException("TemplateResource.getInputStream() was null for resource with path: ["
+                    + resource.getPath() + "]");
+        }
 
-      if (nodes == null)
-      {
-         template = CustomTemplateCompiler.compileTemplate(stream);
-      }
-      else
-      {
-         template = CustomTemplateCompiler.compileTemplate(stream, nodes);
-      }
-      CompositionContext.pop();
-   }
+        if (nodes == null) {
+            template = CustomTemplateCompiler.compileTemplate(stream);
+        } else {
+            template = CustomTemplateCompiler.compileTemplate(stream, nodes);
+        }
+        CompositionContext.pop();
+    }
 
-   public String render()
-   {
-      String result = (String) TemplateRuntime.execute(template, new HashMap<Object, Object>(), factory, registry);
-      return result;
-   }
+    public String render() {
+        String result = (String) TemplateRuntime.execute(template, new HashMap<Object, Object>(), factory, registry);
+        return result;
+    }
 
-   public String render(final Map<Object, Object> context)
-   {
-      String result = (String) TemplateRuntime.execute(template, context, factory, registry);
-      return result;
-   }
+    public String render(final Map<Object, Object> context) {
+        String result = (String) TemplateRuntime.execute(template, context, factory, registry);
+        return result;
+    }
 
-   public void render(final TemplateRuntime runtime, final TemplateOutputStream appender,
-            final Map<Object, Object> context,
-            final VariableResolverFactory factory)
-   {
-      String result = (String) TemplateRuntime.execute(template, context, factory, runtime.getNamedTemplateRegistry());
-      appender.append(result);
-   }
+    public void render(final TemplateRuntime runtime, final TemplateOutputStream appender,
+                       final Map<Object, Object> context,
+                       final VariableResolverFactory factory) {
+        String result = (String) TemplateRuntime.execute(template, context, factory, runtime.getNamedTemplateRegistry());
+        appender.append(result);
+    }
 
 }

@@ -31,61 +31,49 @@ import org.jboss.seam.render.spi.TemplateResource;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class FileTemplateResource implements TemplateResource<File>
-{
-   private final File resource;
-   private final TemplateResolver<File> resolvedBy;
+public class FileTemplateResource implements TemplateResource<File> {
+    private final File resource;
+    private final TemplateResolver<File> resolvedBy;
 
-   public FileTemplateResource(final File file)
-   {
-      this.resource = file;
-      this.resolvedBy = null;
-   }
+    public FileTemplateResource(final File file) {
+        this.resource = file;
+        this.resolvedBy = null;
+    }
 
-   public FileTemplateResource(final File file, final TemplateResolver<File> resolvedBy)
-   {
-      this.resource = file;
-      this.resolvedBy = resolvedBy;
-   }
+    public FileTemplateResource(final File file, final TemplateResolver<File> resolvedBy) {
+        this.resource = file;
+        this.resolvedBy = resolvedBy;
+    }
 
-   @Override
-   public File getUnderlyingResource()
-   {
-      return resource;
-   }
+    @Override
+    public File getUnderlyingResource() {
+        return resource;
+    }
 
-   @Override
-   public String getPath()
-   {
-      return resource.getAbsolutePath();
-   }
+    @Override
+    public String getPath() {
+        return resource.getAbsolutePath();
+    }
 
-   @Override
-   public InputStream getInputStream()
-   {
-      try
-      {
-         return new FileInputStream(resource);
-      }
-      catch (FileNotFoundException e)
-      {
-         throw new RuntimeException("Could not open " + this.getClass().getSimpleName() + " at ["
-                  + resource.getAbsolutePath() + "]", e);
-      }
-   }
+    @Override
+    public InputStream getInputStream() {
+        try {
+            return new FileInputStream(resource);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Could not open " + this.getClass().getSimpleName() + " at ["
+                    + resource.getAbsolutePath() + "]", e);
+        }
+    }
 
-   @Override
-   public TemplateResolver<File> getResolvedBy()
-   {
-      return resolvedBy;
-   }
+    @Override
+    public TemplateResolver<File> getResolvedBy() {
+        return resolvedBy;
+    }
 
-   @Override
-   public long getLastModified()
-   {
-      return resource.lastModified();
-   }
+    @Override
+    public long getLastModified() {
+        return resource.lastModified();
+    }
 
 }

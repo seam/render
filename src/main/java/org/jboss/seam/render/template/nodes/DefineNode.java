@@ -33,56 +33,48 @@ import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class DefineNode extends ContextualNode
-{
-   private static final long serialVersionUID = 3356732131663865976L;
+public class DefineNode extends ContextualNode {
+    private static final long serialVersionUID = 3356732131663865976L;
 
-   public DefineNode()
-   {
-      super();
-      terminus = new TerminalNode();
-   }
+    public DefineNode() {
+        super();
+        terminus = new TerminalNode();
+    }
 
-   @Override
-   public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
-            final VariableResolverFactory factory)
-   {
-      return next != null ? next.eval(runtime, appender, ctx, factory) : null;
-   }
+    @Override
+    public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
+                       final VariableResolverFactory factory) {
+        return next != null ? next.eval(runtime, appender, ctx, factory) : null;
+    }
 
-   @Override
-   public boolean demarcate(final Node terminatingNode, final char[] template)
-   {
+    @Override
+    public boolean demarcate(final Node terminatingNode, final char[] template) {
 
-      Node definition = next;
-      Node n = definition;
+        Node definition = next;
+        Node n = definition;
 
-      while (n.getNext() != null)
-      {
-         n = n.next;
-      }
+        while (n.getNext() != null) {
+            n = n.next;
+        }
 
-      n.next = new EndNode();
-      next = terminus;
+        n.next = new EndNode();
+        next = terminus;
 
-      String key = new String(contents);
-      if (key.isEmpty())
-      {
-         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + key + "}", new char[] {}, 0);
-      }
+        String key = new String(contents);
+        if (key.isEmpty()) {
+            throw new CompileException("@define{ ... } expects 1 argument, got @define{" + key + "}", new char[]{}, 0);
+        }
 
-      CompositionContext context = CompositionContext.peek();
-      context.put(key, new Definition(definition));
+        CompositionContext context = CompositionContext.peek();
+        context.put(key, new Definition(definition));
 
-      return false;
-   }
+        return false;
+    }
 
-   @Override
-   public boolean isOpenNode()
-   {
-      return true;
-   }
+    @Override
+    public boolean isOpenNode() {
+        return true;
+    }
 
 }

@@ -35,46 +35,40 @@ import org.mvel2.templates.util.TemplateOutputStream;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ParamNode extends ContextualNode
-{
-   private static final long serialVersionUID = 3356732131663865976L;
-   private static final String DELIM = "=";
+public class ParamNode extends ContextualNode {
+    private static final long serialVersionUID = 3356732131663865976L;
+    private static final String DELIM = "=";
 
-   public ParamNode()
-   {
-      super();
-      // terminus = new TerminalNode();
-   }
+    public ParamNode() {
+        super();
+        // terminus = new TerminalNode();
+    }
 
-   @Override
-   @SuppressWarnings("unchecked")
-   public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
-            final VariableResolverFactory factory)
-   {
-      String line = new String(contents);
-      Queue<String> tokens = Tokenizer.tokenize(DELIM, line);
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
+                       final VariableResolverFactory factory) {
+        String line = new String(contents);
+        Queue<String> tokens = Tokenizer.tokenize(DELIM, line);
 
-      if (tokens.size() != 2)
-      {
-         throw new CompileException("@" + getName()
-                  + "{ param " + DELIM + " value } requires two parameters, instead received @" + getName()
-                  + "{" + line + "}", new char[] {}, 0);
-      }
+        if (tokens.size() != 2) {
+            throw new CompileException("@" + getName()
+                    + "{ param " + DELIM + " value } requires two parameters, instead received @" + getName()
+                    + "{" + line + "}", new char[]{}, 0);
+        }
 
-      String name = tokens.remove().trim();
-      String el = tokens.remove().trim();
-      Object result = MVEL.eval(el, ctx, factory);
-      if (result != null)
-      {
-         ((Map<Object, Object>) ctx).put(name, result);
-      }
+        String name = tokens.remove().trim();
+        String el = tokens.remove().trim();
+        Object result = MVEL.eval(el, ctx, factory);
+        if (result != null) {
+            ((Map<Object, Object>) ctx).put(name, result);
+        }
 
-      return next != null ? next.eval(runtime, appender, ctx, factory) : null;
-   }
+        return next != null ? next.eval(runtime, appender, ctx, factory) : null;
+    }
 
-   @Override
-   public boolean demarcate(final Node terminatingNode, final char[] template)
-   {
-      return false;
-   }
+    @Override
+    public boolean demarcate(final Node terminatingNode, final char[] template) {
+        return false;
+    }
 }

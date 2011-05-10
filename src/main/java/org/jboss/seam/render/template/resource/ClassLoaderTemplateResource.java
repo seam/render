@@ -30,68 +30,56 @@ import org.jboss.seam.render.spi.TemplateResource;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class ClassLoaderTemplateResource implements TemplateResource<ClassLoader>
-{
+public class ClassLoaderTemplateResource implements TemplateResource<ClassLoader> {
 
-   private final TemplateResolver<ClassLoader> resolver;
-   private final ClassLoader loader;
-   private final String path;
+    private final TemplateResolver<ClassLoader> resolver;
+    private final ClassLoader loader;
+    private final String path;
 
-   public ClassLoaderTemplateResource(final TemplateResolver<ClassLoader> resolver, final ClassLoader loader,
-            final String path)
-   {
-      this.resolver = resolver;
-      this.loader = loader;
-      this.path = path;
-   }
+    public ClassLoaderTemplateResource(final TemplateResolver<ClassLoader> resolver, final ClassLoader loader,
+                                       final String path) {
+        this.resolver = resolver;
+        this.loader = loader;
+        this.path = path;
+    }
 
-   public ClassLoaderTemplateResource(final ClassLoader loader,
-            final String path)
-   {
-      this.resolver = null;
-      this.loader = loader;
-      this.path = path;
-   }
+    public ClassLoaderTemplateResource(final ClassLoader loader,
+                                       final String path) {
+        this.resolver = null;
+        this.loader = loader;
+        this.path = path;
+    }
 
-   @Override
-   public String getPath()
-   {
-      return path;
-   }
+    @Override
+    public String getPath() {
+        return path;
+    }
 
-   @Override
-   public InputStream getInputStream()
-   {
-      return loader.getResourceAsStream(path);
-   }
+    @Override
+    public InputStream getInputStream() {
+        return loader.getResourceAsStream(path);
+    }
 
-   @Override
-   public ClassLoader getUnderlyingResource()
-   {
-      return loader;
-   }
+    @Override
+    public ClassLoader getUnderlyingResource() {
+        return loader;
+    }
 
-   @Override
-   public TemplateResolver<ClassLoader> getResolvedBy()
-   {
-      return resolver;
-   }
+    @Override
+    public TemplateResolver<ClassLoader> getResolvedBy() {
+        return resolver;
+    }
 
-   @Override
-   public long getLastModified()
-   {
-      URLConnection connection = null;
-      try
-      {
-         connection = loader.getResource(path).openConnection();
-         return connection.getLastModified();
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException("Could not determine last modified time for resource [" + path + "]", e);
-      }
-   }
+    @Override
+    public long getLastModified() {
+        URLConnection connection = null;
+        try {
+            connection = loader.getResource(path).openConnection();
+            return connection.getLastModified();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not determine last modified time for resource [" + path + "]", e);
+        }
+    }
 
 }

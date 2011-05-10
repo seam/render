@@ -25,25 +25,20 @@ import javax.inject.Named;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 @Named
-public class MockBean
-{
-   private String value = "Foo";
+public class MockBean {
+    private String value = "Foo";
 
-   public MockBean()
-   {
-      System.out.println("Instantiated MockBean");
-   }
+    public MockBean() {
+        System.out.println("Instantiated MockBean");
+    }
 
-   public String getValue()
-   {
-      return value;
-   }
+    public String getValue() {
+        return value;
+    }
 
-   public void setValue(final String value)
-   {
-      this.value = value;
-   }
+    public void setValue(final String value) {
+        this.value = value;
+    }
 }

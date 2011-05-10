@@ -25,57 +25,44 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public abstract class Paths
-{
-   /**
-    * Calculate a path using the given relative path and a base path.
-    */
-   public static String calculateRelativePath(String path, String relativePath)
-   {
-      Assert.notNull(path, "Path must not be null.");
-      Assert.notNull(relativePath, "Relative path must not be null.");
+public abstract class Paths {
+    /**
+     * Calculate a path using the given relative path and a base path.
+     */
+    public static String calculateRelativePath(String path, String relativePath) {
+        Assert.notNull(path, "Path must not be null.");
+        Assert.notNull(relativePath, "Relative path must not be null.");
 
-      int index = path.lastIndexOf(File.separator);
-      if (index > -1)
-      {
-         path = path.substring(0, index);
-      }
+        int index = path.lastIndexOf(File.separator);
+        if (index > -1) {
+            path = path.substring(0, index);
+        }
 
-      relativePath = relativePath.trim();
-      while (relativePath.startsWith("."))
-      {
-         if (relativePath.startsWith(".." + File.separator))
-         {
-            relativePath.substring(3);
-            index = path.lastIndexOf(File.separator);
-            if (index > -1)
-            {
-               path = path.substring(0, index);
+        relativePath = relativePath.trim();
+        while (relativePath.startsWith(".")) {
+            if (relativePath.startsWith(".." + File.separator)) {
+                relativePath.substring(3);
+                index = path.lastIndexOf(File.separator);
+                if (index > -1) {
+                    path = path.substring(0, index);
+                }
+            } else if (relativePath.startsWith("." + File.separator)) {
+                relativePath = relativePath.substring(2);
+                index = path.lastIndexOf(File.separator);
+                if (index > -1) {
+                    path = path.substring(0, index);
+                }
+            } else if (relativePath.startsWith(".")) {
+                relativePath = relativePath.substring(1);
             }
-         }
-         else if (relativePath.startsWith("." + File.separator))
-         {
-            relativePath = relativePath.substring(2);
-            index = path.lastIndexOf(File.separator);
-            if (index > -1)
-            {
-               path = path.substring(0, index);
-            }
-         }
-         else if (relativePath.startsWith("."))
-         {
+
+        }
+
+        if (path.endsWith(File.separator) && relativePath.startsWith(File.separator)) {
             relativePath = relativePath.substring(1);
-         }
-
-      }
-
-      if (path.endsWith(File.separator) && relativePath.startsWith(File.separator))
-      {
-         relativePath = relativePath.substring(1);
-      }
-      path = path + File.separator + relativePath;
-      return path;
-   }
+        }
+        path = path + File.separator + relativePath;
+        return path;
+    }
 }

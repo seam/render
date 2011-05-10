@@ -21,8 +21,6 @@
  */
 package org.jboss.seam.render.test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,29 +30,27 @@ import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateRuntime;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class MVELSyntaxTest
-{
-   @Test
-   public void testIf() throws Exception
-   {
-      CompiledTemplate template = CustomTemplateCompiler.compileTemplate("@if{true}hi@end{}");
-      String result = (String) TemplateRuntime.execute(template);
+public class MVELSyntaxTest {
+    @Test
+    public void testIf() throws Exception {
+        CompiledTemplate template = CustomTemplateCompiler.compileTemplate("@if{true}hi@end{}");
+        String result = (String) TemplateRuntime.execute(template);
 
-      assertEquals("hi", result);
-   }
+        assertEquals("hi", result);
+    }
 
-   @Test
-   public void testDynamicArrayVariableAssignment() throws Exception
-   {
-      CompiledTemplate template = CustomTemplateCompiler
-               .compileTemplate("@code{ arr = {1, 2, 3, 4, 5} }@foreach{i:arr}@{i}@end{}");
-      Map<String, Object> map = new HashMap<String, Object>();
-      String result = (String) TemplateRuntime.execute(template, map, new MapVariableResolverFactory(map));
+    @Test
+    public void testDynamicArrayVariableAssignment() throws Exception {
+        CompiledTemplate template = CustomTemplateCompiler
+                .compileTemplate("@code{ arr = {1, 2, 3, 4, 5} }@foreach{i:arr}@{i}@end{}");
+        Map<String, Object> map = new HashMap<String, Object>();
+        String result = (String) TemplateRuntime.execute(template, map, new MapVariableResolverFactory(map));
 
-      assertEquals("12345", result);
-   }
+        assertEquals("12345", result);
+    }
 }

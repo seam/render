@@ -31,94 +31,80 @@ import org.jboss.seam.solder.util.service.ServiceLoader;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 @SuppressWarnings("rawtypes")
-public class TemplateResolverFactory implements TemplateResolver<Object>
-{
-   // TODO evaluate this. it might not be a good idea to use static here
-   private static ServiceLoader<TemplateResolver> resolvers = null;
+public class TemplateResolverFactory implements TemplateResolver<Object> {
+    // TODO evaluate this. it might not be a good idea to use static here
+    private static ServiceLoader<TemplateResolver> resolvers = null;
 
-   Set<TemplateResolver> addedResolvers = new HashSet<TemplateResolver>();
+    Set<TemplateResolver> addedResolvers = new HashSet<TemplateResolver>();
 
-   public void addResolver(final TemplateResolver resolver)
-   {
-      addedResolvers.add(resolver);
-   }
+    public void addResolver(final TemplateResolver resolver) {
+        addedResolvers.add(resolver);
+    }
 
-   @Override
-   @SuppressWarnings("unchecked")
-   public TemplateResource resolve(final String target) throws TemplateResolutionException
-   {
-      Assert.notNull(target, "Target resource must not be null.");
-      loadResolvers();
-      TemplateResource<?> resource = null;
-      for (TemplateResolver<?> resolver : addedResolvers)
-      {
-         resource = resolver.resolve(target);
-         if (resource != null)
-            break;
-      }
-      if (resource == null)
-      {
-         for (TemplateResolver<?> resolver : resolvers)
-         {
+    @Override
+    @SuppressWarnings("unchecked")
+    public TemplateResource resolve(final String target) throws TemplateResolutionException {
+        Assert.notNull(target, "Target resource must not be null.");
+        loadResolvers();
+        TemplateResource<?> resource = null;
+        for (TemplateResolver<?> resolver : addedResolvers) {
             resource = resolver.resolve(target);
             if (resource != null)
-               break;
-         }
-      }
+                break;
+        }
+        if (resource == null) {
+            for (TemplateResolver<?> resolver : resolvers) {
+                resource = resolver.resolve(target);
+                if (resource != null)
+                    break;
+            }
+        }
 
-      if (resource == null)
-      {
-         throw new TemplateResolutionException("Could not load requested resource: [" + target
-                  + "] with any configured resolvers:"
-                  + resolvers + ", " + addedResolvers);
-      }
+        if (resource == null) {
+            throw new TemplateResolutionException("Could not load requested resource: [" + target
+                    + "] with any configured resolvers:"
+                    + resolvers + ", " + addedResolvers);
+        }
 
-      return resource;
-   }
+        return resource;
+    }
 
-   @Override
-   @SuppressWarnings("unchecked")
-   public TemplateResource resolveRelative(final TemplateResource origin, final String relativePath)
-            throws TemplateResolutionException
-   {
-      Assert.notNull(origin, "Origin resource was null when attempting to resolve [" + relativePath + "]");
-      Assert.notNull(
-               relativePath,
-               "Relative resource path must not be null when attempting to resolve from base resource ["
+    @Override
+    @SuppressWarnings("unchecked")
+    public TemplateResource resolveRelative(final TemplateResource origin, final String relativePath)
+            throws TemplateResolutionException {
+        Assert.notNull(origin, "Origin resource was null when attempting to resolve [" + relativePath + "]");
+        Assert.notNull(
+                relativePath,
+                "Relative resource path must not be null when attempting to resolve from base resource ["
                         + origin.getPath() + "]");
 
-      TemplateResource result = null;
-      TemplateResolver resolver = origin.getResolvedBy();
+        TemplateResource result = null;
+        TemplateResolver resolver = origin.getResolvedBy();
 
-      if (resolver != null)
-      {
-         result = resolver.resolveRelative(origin, relativePath);
-      }
+        if (resolver != null) {
+            result = resolver.resolveRelative(origin, relativePath);
+        }
 
-      if (result == null)
-      {
-         result = resolve(relativePath);
-      }
+        if (result == null) {
+            result = resolve(relativePath);
+        }
 
-      if (result == null)
-      {
-         throw new TemplateResolutionException("Could not load requested resource: [" + relativePath
-                  + "] using origin resolver [" + origin.getResolvedBy() + "] from resource [" + origin.getPath()
-                  + "]");
-      }
+        if (result == null) {
+            throw new TemplateResolutionException("Could not load requested resource: [" + relativePath
+                    + "] using origin resolver [" + origin.getResolvedBy() + "] from resource [" + origin.getPath()
+                    + "]");
+        }
 
-      return result;
-   }
+        return result;
+    }
 
-   private synchronized void loadResolvers()
-   {
-      if (resolvers == null)
-      {
-         resolvers = ServiceLoader.load(TemplateResolver.class);
-      }
-   }
+    private synchronized void loadResolvers() {
+        if (resolvers == null) {
+            resolvers = ServiceLoader.load(TemplateResolver.class);
+        }
+    }
 
 }

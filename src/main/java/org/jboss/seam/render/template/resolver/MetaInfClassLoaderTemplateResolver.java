@@ -27,24 +27,20 @@ import org.jboss.seam.render.util.Assert;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class MetaInfClassLoaderTemplateResolver extends ClassLoaderTemplateResolver
-{
-   public MetaInfClassLoaderTemplateResolver()
-   {
-      super();
-   }
+public class MetaInfClassLoaderTemplateResolver extends ClassLoaderTemplateResolver {
+    public MetaInfClassLoaderTemplateResolver() {
+        super();
+    }
 
-   public MetaInfClassLoaderTemplateResolver(final ClassLoader loader)
-   {
-      super(loader);
-   }
+    public MetaInfClassLoaderTemplateResolver(final ClassLoader loader) {
+        super(loader);
+    }
 
-   @Override
-   public TemplateResource<ClassLoader> resolve(String path)
-   {
-      Assert.notNull(path, "Resource path must not be null.");
-      path = "META-INF/" + path;
-      return super.resolve(path);
-   }
+    @Override
+    public TemplateResource<ClassLoader> resolve(String path) {
+        Assert.notNull(path, "Resource path must not be null.");
+        path = "META-INF/" + path;
+        return super.resolve(path);
+    }
 
 }

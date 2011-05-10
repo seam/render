@@ -31,105 +31,83 @@ import org.mvel2.integration.impl.BaseVariableResolverFactory;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class ELVariableResolverFactory extends BaseVariableResolverFactory
-{
-   private static final long serialVersionUID = -6604385342199256006L;
+public class ELVariableResolverFactory extends BaseVariableResolverFactory {
+    private static final long serialVersionUID = -6604385342199256006L;
 
-   private final Expressions expressions;
+    private final Expressions expressions;
 
-   @Inject
-   public ELVariableResolverFactory(final Expressions expressions)
-   {
-      this.nextFactory = null;
-      this.expressions = expressions;
-   }
+    @Inject
+    public ELVariableResolverFactory(final Expressions expressions) {
+        this.nextFactory = null;
+        this.expressions = expressions;
+    }
 
-   public ELVariableResolverFactory(final Expressions expressions, final VariableResolverFactory nextFactory)
-   {
-      this.nextFactory = nextFactory;
-      this.expressions = expressions;
-   }
+    public ELVariableResolverFactory(final Expressions expressions, final VariableResolverFactory nextFactory) {
+        this.nextFactory = nextFactory;
+        this.expressions = expressions;
+    }
 
-   @Override
-   public VariableResolver getVariableResolver(final String name)
-   {
-      if (isLocallyResolvable(name))
-      {
-         return new ELVariableResolver(expressions, name);
-      }
-      else if (getNextFactory() != null)
-         return getNextFactory().getVariableResolver(name);
-      else
-         return super.getVariableResolver(name);
-   }
+    @Override
+    public VariableResolver getVariableResolver(final String name) {
+        if (isLocallyResolvable(name)) {
+            return new ELVariableResolver(expressions, name);
+        } else if (getNextFactory() != null)
+            return getNextFactory().getVariableResolver(name);
+        else
+            return super.getVariableResolver(name);
+    }
 
-   @Override
-   public VariableResolver createVariable(final String name, final Object value)
-   {
-      if (isLocallyResolvable(name))
-      {
-         ValueExpression expression = expressions.getExpressionFactory().createValueExpression(value, Object.class);
-         Class<?> type = expression.getType(expressions.getELContext());
-         ELVariableResolver resolver = new ELVariableResolver(expressions, name, type);
-         resolver.setValue(value);
-         return resolver;
-      }
-      else if (isResolveable(name))
-      {
-         return getNextFactory().createVariable(name, value);
-      }
-      return null;
-   }
+    @Override
+    public VariableResolver createVariable(final String name, final Object value) {
+        if (isLocallyResolvable(name)) {
+            ValueExpression expression = expressions.getExpressionFactory().createValueExpression(value, Object.class);
+            Class<?> type = expression.getType(expressions.getELContext());
+            ELVariableResolver resolver = new ELVariableResolver(expressions, name, type);
+            resolver.setValue(value);
+            return resolver;
+        } else if (isResolveable(name)) {
+            return getNextFactory().createVariable(name, value);
+        }
+        return null;
+    }
 
-   @Override
-   public VariableResolver createVariable(final String name, final Object value, final Class<?> type)
-   {
-      if (isLocallyResolvable(name))
-      {
-         ELVariableResolver resolver = new ELVariableResolver(expressions, name, type);
-         resolver.setValue(value);
-         return resolver;
-      }
-      else if (isResolveable(name))
-      {
-         return getNextFactory().createVariable(name, value);
-      }
-      return null;
-   }
+    @Override
+    public VariableResolver createVariable(final String name, final Object value, final Class<?> type) {
+        if (isLocallyResolvable(name)) {
+            ELVariableResolver resolver = new ELVariableResolver(expressions, name, type);
+            resolver.setValue(value);
+            return resolver;
+        } else if (isResolveable(name)) {
+            return getNextFactory().createVariable(name, value);
+        }
+        return null;
+    }
 
-   @Override
-   public boolean isTarget(final String name)
-   {
-      return isLocallyResolvable(name);
-   }
+    @Override
+    public boolean isTarget(final String name) {
+        return isLocallyResolvable(name);
+    }
 
-   @Override
-   public boolean isResolveable(final String name)
-   {
-      boolean result = false;
-      result = isLocallyResolvable(name) || isNextResolveable(name);
-      return result;
-   }
+    @Override
+    public boolean isResolveable(final String name) {
+        boolean result = false;
+        result = isLocallyResolvable(name) || isNextResolveable(name);
+        return result;
+    }
 
-   private boolean isLocallyResolvable(final String name)
-   {
-      boolean result = false;
-      if (name == null)
-      {
-         result = false;
-      }
-      try
-      {
-         expressions.evaluateValueExpression(expressions.toExpression(name));
-         result = true;
-      }
-      catch (Exception e)
-      {
-      }
+    private boolean isLocallyResolvable(final String name) {
+        boolean result = false;
+        if (name == null) {
+            result = false;
+        }
+        try {
+            expressions.evaluateValueExpression(expressions.toExpression(name));
+            result = true;
+        } catch (Exception e) {
+        }
 
-      return result;
-   }
+        return result;
+    }
 
 }

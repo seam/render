@@ -28,64 +28,54 @@ import org.jboss.seam.render.spi.TemplateResource;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class InputStreamTemplateResource implements TemplateResource<InputStream>
-{
-   private final InputStream template;
-   private final TemplateResolver<InputStream> resolvedBy;
-   private String path = "";
+public class InputStreamTemplateResource implements TemplateResource<InputStream> {
+    private final InputStream template;
+    private final TemplateResolver<InputStream> resolvedBy;
+    private String path = "";
 
-   public InputStreamTemplateResource(final TemplateResolver<InputStream> resolvedBy, final InputStream template,
-            final String path)
-   {
-      this.template = template;
-      this.resolvedBy = resolvedBy;
-      this.path = path;
-   }
+    public InputStreamTemplateResource(final TemplateResolver<InputStream> resolvedBy, final InputStream template,
+                                       final String path) {
+        this.template = template;
+        this.resolvedBy = resolvedBy;
+        this.path = path;
+    }
 
-   public InputStreamTemplateResource(final InputStream template, final String path)
-   {
-      this.template = template;
-      this.resolvedBy = null;
-      this.path = path;
-   }
+    public InputStreamTemplateResource(final InputStream template, final String path) {
+        this.template = template;
+        this.resolvedBy = null;
+        this.path = path;
+    }
 
-   public InputStreamTemplateResource(final InputStream template)
-   {
-      this.template = template;
-      this.resolvedBy = null;
-      this.path = null;
-   }
+    public InputStreamTemplateResource(final InputStream template) {
+        this.template = template;
+        this.resolvedBy = null;
+        this.path = null;
+    }
 
-   @Override
-   public String getPath()
-   {
-      return path;
-   }
+    @Override
+    public String getPath() {
+        return path;
+    }
 
-   @Override
-   public InputStream getInputStream()
-   {
-      return template;
-   }
+    @Override
+    public InputStream getInputStream() {
+        return template;
+    }
 
-   @Override
-   public long getLastModified()
-   {
-      return 0;
-   }
+    @Override
+    public long getLastModified() {
+        return 0;
+    }
 
-   @Override
-   public InputStream getUnderlyingResource()
-   {
-      return template;
-   }
+    @Override
+    public InputStream getUnderlyingResource() {
+        return template;
+    }
 
-   @Override
-   public TemplateResolver<InputStream> getResolvedBy()
-   {
-      return resolvedBy;
-   }
+    @Override
+    public TemplateResolver<InputStream> getResolvedBy() {
+        return resolvedBy;
+    }
 
 }

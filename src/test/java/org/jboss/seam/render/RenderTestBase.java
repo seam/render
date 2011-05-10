@@ -32,19 +32,16 @@ import org.junit.runner.RunWith;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 @RunWith(Arquillian.class)
-public abstract class RenderTestBase
-{
-   @Deployment
-   public static JavaArchive createTestArchive()
-   {
-      JavaArchive deployment = ShrinkWrap.create(JavaArchive.class)
-               .addPackages(true, Root.class.getPackage())
-               .addPackages(true, Expressions.class.getPackage())
-               .addManifestResource(new ByteArrayAsset("<beans/>".getBytes()), ArchivePaths.create("beans.xml"))
-               .addManifestResource("META-INF/services/org.jboss.seam.solder.beanManager.BeanManagerProvider");
-      return deployment;
-   }
+public abstract class RenderTestBase {
+    @Deployment
+    public static JavaArchive createTestArchive() {
+        JavaArchive deployment = ShrinkWrap.create(JavaArchive.class)
+                .addPackages(true, Root.class.getPackage())
+                .addPackages(true, Expressions.class.getPackage())
+                .addManifestResource(new ByteArrayAsset("<beans/>".getBytes()), ArchivePaths.create("beans.xml"))
+                .addManifestResource("META-INF/services/org.jboss.seam.solder.beanManager.BeanManagerProvider");
+        return deployment;
+    }
 }

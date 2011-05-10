@@ -36,70 +36,59 @@ import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class InsertNode extends ContextualNode
-{
-   private static final long serialVersionUID = -1285613595891138294L;
+public class InsertNode extends ContextualNode {
+    private static final long serialVersionUID = -1285613595891138294L;
 
-   private static final String DELIM = ",";
+    private static final String DELIM = ",";
 
-   public InsertNode()
-   {
-      super();
-      terminus = new TerminalNode();
-   }
+    public InsertNode() {
+        super();
+        terminus = new TerminalNode();
+    }
 
-   private Node defaultContent;
+    private Node defaultContent;
 
-   @Override
-   public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
-            final VariableResolverFactory factory)
-   {
-      String line = new String(contents);
-      Queue<String> tokens = Tokenizer.tokenize(DELIM, line);
+    @Override
+    public Object eval(final TemplateRuntime runtime, final TemplateOutputStream appender, final Object ctx,
+                       final VariableResolverFactory factory) {
+        String line = new String(contents);
+        Queue<String> tokens = Tokenizer.tokenize(DELIM, line);
 
-      if (tokens.isEmpty())
-      {
-         throw new CompileException("@define{ ... } expects 1 argument, got @define{" + line + "}", new char[] {}, 0);
-      }
+        if (tokens.isEmpty()) {
+            throw new CompileException("@define{ ... } expects 1 argument, got @define{" + line + "}", new char[]{}, 0);
+        }
 
-      CompositionContext context = CompositionContext.peek();
-      Definition definition = context.get(line.trim());
+        CompositionContext context = CompositionContext.peek();
+        Definition definition = context.get(line.trim());
 
-      if (definition == null)
-      {
-         defaultContent.eval(runtime, appender, ctx, factory);
-      }
-      else
-      {
-         definition.eval(context, appender, ctx);
-      }
+        if (definition == null) {
+            defaultContent.eval(runtime, appender, ctx, factory);
+        } else {
+            definition.eval(context, appender, ctx);
+        }
 
-      return next != null ? next.eval(runtime, appender, ctx, factory) : null;
-   }
+        return next != null ? next.eval(runtime, appender, ctx, factory) : null;
+    }
 
-   @Override
-   public boolean demarcate(final Node terminatingNode, final char[] template)
-   {
+    @Override
+    public boolean demarcate(final Node terminatingNode, final char[] template) {
 
-      Node n = defaultContent = next;
+        Node n = defaultContent = next;
 
-      while (n.getNext() != null)
-      {
-         n = n.next;
-      }
+        while (n.getNext() != null) {
+            n = n.next;
+        }
 
-      n.next = new EndNode();
-      next = terminus;
+        n.next = new EndNode();
+        next = terminus;
 
-      return false;
-   }
+        return false;
+    }
 
-   @Override
-   public boolean isOpenNode()
-   {
-      return true;
-   }
+    @Override
+    public boolean isOpenNode() {
+        return true;
+    }
 
 }

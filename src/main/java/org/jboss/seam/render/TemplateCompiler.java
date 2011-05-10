@@ -50,145 +50,131 @@ import org.mvel2.templates.res.Node;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class TemplateCompiler
-{
-   private final TemplateRegistry registry;
-   private final VariableResolverFactory variableFactory;
-   private final TemplateResolverFactory resolverFactory;
+public class TemplateCompiler {
+    private final TemplateRegistry registry;
+    private final VariableResolverFactory variableFactory;
+    private final TemplateResolverFactory resolverFactory;
 
-   private final Map<String, Class<? extends Node>> nodes = new HashMap<String, Class<? extends Node>>();
+    private final Map<String, Class<? extends Node>> nodes = new HashMap<String, Class<? extends Node>>();
 
-   @Inject
-   public TemplateCompiler(final VariableResolverFactory variableFactory)
-   {
-      this.variableFactory = variableFactory;
-      this.resolverFactory = new TemplateResolverFactory();
-      this.registry = new SimpleTemplateRegistry();
-      addNode("param", ParamNode.class);
-      addNode("extends", ExtendsNode.class);
-      addNode("define", DefineNode.class);
-      addNode("insert", InsertNode.class);
-      addNode("include", IncludeNode.class);
-      // create a map resolve to hold the functions we want to inject, and chain
-      // the ELVariableResolverFactory to this factory.
-   }
+    @Inject
+    public TemplateCompiler(final VariableResolverFactory variableFactory) {
+        this.variableFactory = variableFactory;
+        this.resolverFactory = new TemplateResolverFactory();
+        this.registry = new SimpleTemplateRegistry();
+        addNode("param", ParamNode.class);
+        addNode("extends", ExtendsNode.class);
+        addNode("define", DefineNode.class);
+        addNode("insert", InsertNode.class);
+        addNode("include", IncludeNode.class);
+        // create a map resolve to hold the functions we want to inject, and chain
+        // the ELVariableResolverFactory to this factory.
+    }
 
-   /**
-    * Convenience method for compiling a template from a {@link String}.
-    */
-   public CompiledTemplateResource compileResource(final String template)
-   {
-      return compile(new StringTemplateResource(template));
-   }
+    /**
+     * Convenience method for compiling a template from a {@link String}.
+     */
+    public CompiledTemplateResource compileResource(final String template) {
+        return compile(new StringTemplateResource(template));
+    }
 
-   /**
-    * Convenience method for compiling a template from an {@link InputStream}.
-    */
-   public CompiledTemplateResource compileResource(final InputStream template)
-   {
-      return compile(new InputStreamTemplateResource(template));
-   }
+    /**
+     * Convenience method for compiling a template from an {@link InputStream}.
+     */
+    public CompiledTemplateResource compileResource(final InputStream template) {
+        return compile(new InputStreamTemplateResource(template));
+    }
 
-   /**
-    * Convenience method for compiling a template from a {@link File}.
-    */
-   public CompiledTemplateResource compileResource(final File template)
-   {
-      return compile(new FileTemplateResource(template));
-   }
+    /**
+     * Convenience method for compiling a template from a {@link File}.
+     */
+    public CompiledTemplateResource compileResource(final File template) {
+        return compile(new FileTemplateResource(template));
+    }
 
-   /**
-    * Resolve the given path using any configured {@link TemplateResolver} instances and compile it with the default
-    * nodes. Return the result as a {@link CompiledTemplateResource}.
-    */
-   public CompiledTemplateResource compile(final String path) throws TemplateResolutionException
-   {
-      TemplateResource<?> resource = resolverFactory.resolve(path);
-      return compile(resource);
-   }
+    /**
+     * Resolve the given path using any configured {@link TemplateResolver} instances and compile it with the default
+     * nodes. Return the result as a {@link CompiledTemplateResource}.
+     */
+    public CompiledTemplateResource compile(final String path) throws TemplateResolutionException {
+        TemplateResource<?> resource = resolverFactory.resolve(path);
+        return compile(resource);
+    }
 
-   /**
-    * Resolve the given path using any configured {@link TemplateResolver} instances and compile it with the given map
-    * of named {@link Node} types. Return the result as a {@link CompiledTemplateResource}.
-    */
-   public CompiledTemplateResource compile(final String path,
-            final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException
-   {
-      TemplateResource<?> resource = resolverFactory.resolve(path);
-      return compile(resource, nodes);
-   }
+    /**
+     * Resolve the given path using any configured {@link TemplateResolver} instances and compile it with the given map
+     * of named {@link Node} types. Return the result as a {@link CompiledTemplateResource}.
+     */
+    public CompiledTemplateResource compile(final String path,
+                                            final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException {
+        TemplateResource<?> resource = resolverFactory.resolve(path);
+        return compile(resource, nodes);
+    }
 
-   /**
-    * Compile the given {@link TemplateResource}. Return the result as a {@link CompiledTemplateResource}.
-    */
-   public CompiledTemplateResource compile(final TemplateResource<?> templateResource)
-            throws TemplateResolutionException
-   {
-      Assert.notNull(templateResource, "Cannot compile a null TemplateResource.");
-      Map<String, Class<? extends Node>> nodes = getNodes();
-      return compile(templateResource, nodes);
+    /**
+     * Compile the given {@link TemplateResource}. Return the result as a {@link CompiledTemplateResource}.
+     */
+    public CompiledTemplateResource compile(final TemplateResource<?> templateResource)
+            throws TemplateResolutionException {
+        Assert.notNull(templateResource, "Cannot compile a null TemplateResource.");
+        Map<String, Class<? extends Node>> nodes = getNodes();
+        return compile(templateResource, nodes);
 
-   }
+    }
 
-   /**
-    * Compile the given {@link TemplateResource} along with the given map of named {@link Node} types. Return the result
-    * as a {@link CompiledTemplateResource}.
-    */
-   public CompiledTemplateResource compile(final TemplateResource<?> templateResource,
-            final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException
-   {
-      CompiledTemplateResource view = new CompiledTemplateResource(this, variableFactory, registry, templateResource,
-               nodes);
-      return view;
-   }
+    /**
+     * Compile the given {@link TemplateResource} along with the given map of named {@link Node} types. Return the result
+     * as a {@link CompiledTemplateResource}.
+     */
+    public CompiledTemplateResource compile(final TemplateResource<?> templateResource,
+                                            final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException {
+        CompiledTemplateResource view = new CompiledTemplateResource(this, variableFactory, registry, templateResource,
+                nodes);
+        return view;
+    }
 
-   /**
-    * Resolve the given relative path using the {@link TemplateResolver} of the given {@link TemplateResource}. If that
-    * resolver is unable to locate the requested resource, attempt to discover it using any other register
-    * {@link TemplateResolver} instances. Compile the resolved {@link TemplateResource} and return the result as a
-    * {@link CompiledTemplateResource}.
-    */
-   public CompiledTemplateResource compileRelative(final TemplateResource<?> originResource, final String relativePath)
-            throws TemplateResolutionException
-   {
-      TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
-      return compile(resource);
-   }
+    /**
+     * Resolve the given relative path using the {@link TemplateResolver} of the given {@link TemplateResource}. If that
+     * resolver is unable to locate the requested resource, attempt to discover it using any other register
+     * {@link TemplateResolver} instances. Compile the resolved {@link TemplateResource} and return the result as a
+     * {@link CompiledTemplateResource}.
+     */
+    public CompiledTemplateResource compileRelative(final TemplateResource<?> originResource, final String relativePath)
+            throws TemplateResolutionException {
+        TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
+        return compile(resource);
+    }
 
-   /**
-    * Resolve the given relative path using the {@link TemplateResolver} of the given {@link TemplateResource}. If that
-    * resolver is unable to locate the requested resource, attempt to discover it using any other register
-    * {@link TemplateResolver} instances. Compile the resolved {@link TemplateResource} along with the given map of
-    * named {@link Node} types. Return the result as a {@link CompiledTemplateResource}.
-    */
-   public CompiledTemplateResource compileRelative(final TemplateResource<?> originResource, final String relativePath,
-            final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException
-   {
-      TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
-      return compile(resource, nodes);
-   }
+    /**
+     * Resolve the given relative path using the {@link TemplateResolver} of the given {@link TemplateResource}. If that
+     * resolver is unable to locate the requested resource, attempt to discover it using any other register
+     * {@link TemplateResolver} instances. Compile the resolved {@link TemplateResource} along with the given map of
+     * named {@link Node} types. Return the result as a {@link CompiledTemplateResource}.
+     */
+    public CompiledTemplateResource compileRelative(final TemplateResource<?> originResource, final String relativePath,
+                                                    final Map<String, Class<? extends Node>> nodes) throws TemplateResolutionException {
+        TemplateResource<?> resource = resolverFactory.resolveRelative(originResource, relativePath);
+        return compile(resource, nodes);
+    }
 
-   /**
-    * Get the list of {@link Node} types that have been added to this {@link TemplateCompiler} instance.
-    */
-   public Map<String, Class<? extends Node>> getNodes()
-   {
-      return nodes;
-   }
+    /**
+     * Get the list of {@link Node} types that have been added to this {@link TemplateCompiler} instance.
+     */
+    public Map<String, Class<? extends Node>> getNodes() {
+        return nodes;
+    }
 
-   /**
-    * Add a {@link Node} to this {@link TemplateCompiler} instance.
-    */
-   public void addNode(final String name, final Class<? extends Node> type)
-   {
-      nodes.put(name, type);
-   }
+    /**
+     * Add a {@link Node} to this {@link TemplateCompiler} instance.
+     */
+    public void addNode(final String name, final Class<? extends Node> type) {
+        nodes.put(name, type);
+    }
 
-   /**
-    * Get the {@link TemplateResolverFactory} currently in use by this {@link TemplateCompiler}
-    */
-   public TemplateResolverFactory getTemplateResolverFactory()
-   {
-      return resolverFactory;
-   }
+    /**
+     * Get the {@link TemplateResolverFactory} currently in use by this {@link TemplateCompiler}
+     */
+    public TemplateResolverFactory getTemplateResolverFactory() {
+        return resolverFactory;
+    }
 }

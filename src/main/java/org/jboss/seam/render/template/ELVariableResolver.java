@@ -29,73 +29,63 @@ import org.mvel2.integration.VariableResolver;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class ELVariableResolver implements VariableResolver
-{
-   private static final long serialVersionUID = 7393032041693001458L;
+public class ELVariableResolver implements VariableResolver {
+    private static final long serialVersionUID = 7393032041693001458L;
 
-   private final Expressions expressions;
-   private final String name;
-   private final Class<?> type;
-   private final ELContext context;
+    private final Expressions expressions;
+    private final String name;
+    private final Class<?> type;
+    private final ELContext context;
 
-   public ELVariableResolver(final Expressions expressions, final String name, final Class<?> type)
-   {
-      this.expressions = expressions;
-      context = expressions.getELContext();
-      this.name = name;
-      this.type = type;
-   }
+    public ELVariableResolver(final Expressions expressions, final String name, final Class<?> type) {
+        this.expressions = expressions;
+        context = expressions.getELContext();
+        this.name = name;
+        this.type = type;
+    }
 
-   public ELVariableResolver(final Expressions expressions, final String name)
-   {
-      this.expressions = expressions;
-      this.context = expressions.getELContext();
-      this.name = name;
-      this.type = Object.class;
-   }
+    public ELVariableResolver(final Expressions expressions, final String name) {
+        this.expressions = expressions;
+        this.context = expressions.getELContext();
+        this.name = name;
+        this.type = Object.class;
+    }
 
-   @Override
-   public String getName()
-   {
-      return name;
-   }
+    @Override
+    public String getName() {
+        return name;
+    }
 
-   @Override
-   public Class<?> getType()
-   {
-      return type;
-   }
+    @Override
+    public Class<?> getType() {
+        return type;
+    }
 
-   @Override
-   @SuppressWarnings("rawtypes")
-   public void setStaticType(final Class type)
-   {
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void setStaticType(final Class type) {
 
-   }
+    }
 
-   @Override
-   public int getFlags()
-   {
-      return 0;
-   }
+    @Override
+    public int getFlags() {
+        return 0;
+    }
 
-   @Override
-   public Object getValue()
-   {
-      ValueExpression expression = expressions.getExpressionFactory().createValueExpression(context,
-               expressions.toExpression(name), type);
-      Object value = expression.getValue(context);
-      return value;
-   }
+    @Override
+    public Object getValue() {
+        ValueExpression expression = expressions.getExpressionFactory().createValueExpression(context,
+                expressions.toExpression(name), type);
+        Object value = expression.getValue(context);
+        return value;
+    }
 
-   @Override
-   public void setValue(final Object value)
-   {
-      ValueExpression expression = expressions.getExpressionFactory().createValueExpression(context,
-               expressions.toExpression(name), type);
-      expression.setValue(context, value);
-   }
+    @Override
+    public void setValue(final Object value) {
+        ValueExpression expression = expressions.getExpressionFactory().createValueExpression(context,
+                expressions.toExpression(name), type);
+        expression.setValue(context, value);
+    }
 
 }

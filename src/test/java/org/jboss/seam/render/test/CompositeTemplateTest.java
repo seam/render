@@ -21,11 +21,6 @@
  */
 package org.jboss.seam.render.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,117 +34,115 @@ import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.jboss.seam.render.util.Timer;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class CompositeTemplateTest extends RenderTestBase
-{
-   @Inject
-   private TemplateCompiler compiler;
+public class CompositeTemplateTest extends RenderTestBase {
+    @Inject
+    private TemplateCompiler compiler;
 
-   @Inject
-   protected void init(final TemplateResolverFactory factory)
-   {
-      compiler.getTemplateResolverFactory().addResolver(
-               new ClassLoaderTemplateResolver(this.getClass().getClassLoader()));
-   }
+    @Inject
+    protected void init(final TemplateResolverFactory factory) {
+        compiler.getTemplateResolverFactory().addResolver(
+                new ClassLoaderTemplateResolver(this.getClass().getClassLoader()));
+    }
 
-   @Test
-   public void testDefinitionsUsedInContext() throws Exception
-   {
-      Map<Object, Object> context = new HashMap<Object, Object>();
-      Timer timer = Timer.getTimer().start();
-      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/multi-definitions.xhtml");
-      long compileMilliseconds = timer.getElapsedMilliseconds();
+    @Test
+    public void testDefinitionsUsedInContext() throws Exception {
+        Map<Object, Object> context = new HashMap<Object, Object>();
+        Timer timer = Timer.getTimer().start();
+        CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/multi-definitions.xhtml");
+        long compileMilliseconds = timer.getElapsedMilliseconds();
 
-      String output = view.render(context);
-      long elapsedMilliseconds = timer.getElapsedMilliseconds();
+        String output = view.render(context);
+        long elapsedMilliseconds = timer.getElapsedMilliseconds();
 
-      System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
-      System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
-      System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
-      System.out.println();
-      assertEquals("t1def1,t2def2,titlebody", output);
-   }
+        System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
+        System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
+        System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
+        System.out.println();
+        assertEquals("t1def1,t2def2,titlebody", output);
+    }
 
-   @Test
-   public void testSimpleCompositeExtending() throws Exception
-   {
-      String name = "name";
-      String value = "lb3";
+    @Test
+    public void testSimpleCompositeExtending() throws Exception {
+        String name = "name";
+        String value = "lb3";
 
-      Map<Object, Object> context = new HashMap<Object, Object>();
-      context.put(name, new String[] { value });
+        Map<Object, Object> context = new HashMap<Object, Object>();
+        context.put(name, new String[]{value});
 
-      Timer timer = Timer.getTimer().start();
-      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/definitions.xhtml");
-      long compileMilliseconds = timer.getElapsedMilliseconds();
-      String output = view.render(context);
-      long elapsedMilliseconds = timer.getElapsedMilliseconds();
+        Timer timer = Timer.getTimer().start();
+        CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/definitions.xhtml");
+        long compileMilliseconds = timer.getElapsedMilliseconds();
+        String output = view.render(context);
+        long elapsedMilliseconds = timer.getElapsedMilliseconds();
 
-      System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
-      System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
-      System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
-      System.out.println();
+        System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
+        System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
+        System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
+        System.out.println();
 
-      assertNotNull(output);
-      assertTrue(output.contains("@view{}"));
-      assertTrue(output.contains("<html>"));
-      assertTrue(output.contains("Default is rendered if no def is found."));
-      assertFalse(output.contains("This should be ignored."));
-   }
+        assertNotNull(output);
+        assertTrue(output.contains("@view{}"));
+        assertTrue(output.contains("<html>"));
+        assertTrue(output.contains("Default is rendered if no def is found."));
+        assertFalse(output.contains("This should be ignored."));
+    }
 
-   @Test
-   public void testNestedDefinitions() throws Exception
-   {
-      Map<Object, Object> context = new HashMap<Object, Object>();
-      Timer timer = Timer.getTimer().start();
-      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/nested-definitions.xhtml");
-      long compileMilliseconds = timer.getElapsedMilliseconds();
+    @Test
+    public void testNestedDefinitions() throws Exception {
+        Map<Object, Object> context = new HashMap<Object, Object>();
+        Timer timer = Timer.getTimer().start();
+        CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/composite/nested-definitions.xhtml");
+        long compileMilliseconds = timer.getElapsedMilliseconds();
 
-      String output = view.render(context);
-      long elapsedMilliseconds = timer.getElapsedMilliseconds();
+        String output = view.render(context);
+        long elapsedMilliseconds = timer.getElapsedMilliseconds();
 
-      System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
-      System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
-      System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
-      System.out.println();
-      assertEquals("t1t2hi", output);
-   }
+        System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
+        System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
+        System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
+        System.out.println();
+        assertEquals("t1t2hi", output);
+    }
 
-   @Test
-   public void testPerformanceCompositingInline() throws Exception
-   {
-      // TODO use build helper plugin to create a slow-test folder
-      // Map<Object, Object> context = new HashMap<Object, Object>();
-      // Timer timer = Timer.getTimer().start();
-      // CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/inline-stresstest.xhtml");
-      // long compileMilliseconds = timer.getElapsedMilliseconds();
-      //
-      // view.render(context);
-      // long elapsedMilliseconds = timer.getElapsedMilliseconds();
-      //
-      // System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
-      // System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
-      // System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
-      // System.out.println();
-   }
+    @Test
+    public void testPerformanceCompositingInline() throws Exception {
+        // TODO use build helper plugin to create a slow-test folder
+        // Map<Object, Object> context = new HashMap<Object, Object>();
+        // Timer timer = Timer.getTimer().start();
+        // CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/inline-stresstest.xhtml");
+        // long compileMilliseconds = timer.getElapsedMilliseconds();
+        //
+        // view.render(context);
+        // long elapsedMilliseconds = timer.getElapsedMilliseconds();
+        //
+        // System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
+        // System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
+        // System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
+        // System.out.println();
+    }
 
-   @Test
-   public void testPerformanceCompositingNested() throws Exception
-   {
-      // TODO use build helper plugin to create a slow-test folder
-      // Map<Object, Object> context = new HashMap<Object, Object>();
-      // Timer timer = Timer.getTimer().start();
-      // CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/nested-stresstest.xhtml");
-      // long compileMilliseconds = timer.getElapsedMilliseconds();
-      //
-      // view.render(context);
-      // long elapsedMilliseconds = timer.getElapsedMilliseconds();
-      //
-      // System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
-      // System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
-      // System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
-      // System.out.println();
-   }
+    @Test
+    public void testPerformanceCompositingNested() throws Exception {
+        // TODO use build helper plugin to create a slow-test folder
+        // Map<Object, Object> context = new HashMap<Object, Object>();
+        // Timer timer = Timer.getTimer().start();
+        // CompiledView view = compiler.compile("org/jboss/seam/render/views/composite/nested-stresstest.xhtml");
+        // long compileMilliseconds = timer.getElapsedMilliseconds();
+        //
+        // view.render(context);
+        // long elapsedMilliseconds = timer.getElapsedMilliseconds();
+        //
+        // System.out.println("total: " + elapsedMilliseconds / 1000.0 + "(s)");
+        // System.out.print("-- compile: " + compileMilliseconds / 1000.0 + "(s)");
+        // System.out.print(" -- render: " + (elapsedMilliseconds - compileMilliseconds) / 1000.0 + "(s)");
+        // System.out.println();
+    }
 }

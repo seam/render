@@ -25,21 +25,17 @@ import org.mvel2.templates.util.TemplateOutputStream;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class NullTemplateOutputStream implements TemplateOutputStream
-{
+public class NullTemplateOutputStream implements TemplateOutputStream {
 
-   @Override
-   public TemplateOutputStream append(final CharSequence c)
-   {
-      return null;
-   }
+    @Override
+    public TemplateOutputStream append(final CharSequence c) {
+        return null;
+    }
 
-   @Override
-   public TemplateOutputStream append(final char[] c)
-   {
-      return null;
-   }
+    @Override
+    public TemplateOutputStream append(final char[] c) {
+        return null;
+    }
 
 }

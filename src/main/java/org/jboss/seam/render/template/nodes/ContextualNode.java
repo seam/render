@@ -29,34 +29,28 @@ import org.mvel2.templates.res.Node;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 @SuppressWarnings("serial")
-public abstract class ContextualNode extends Node
-{
-   public ContextualNode()
-   {
-      super();
-      init();
-   }
+public abstract class ContextualNode extends Node {
+    public ContextualNode() {
+        super();
+        init();
+    }
 
-   public ContextualNode(final int begin, final String name, final char[] template, final int start, final int end,
-            final Node next)
-   {
-      super(begin, name, template, start, end, next);
-      init();
-   }
+    public ContextualNode(final int begin, final String name, final char[] template, final int start, final int end,
+                          final Node next) {
+        super(begin, name, template, start, end, next);
+        init();
+    }
 
-   public ContextualNode(final int begin, final String name, final char[] template, final int start, final int end)
-   {
-      super(begin, name, template, start, end);
-      init();
-   }
+    public ContextualNode(final int begin, final String name, final char[] template, final int start, final int end) {
+        super(begin, name, template, start, end);
+        init();
+    }
 
-   private void init()
-   {
-      BeanManager manager = new BeanManagerLocator().getBeanManager();
-      BeanManagerUtils.injectNonContextualInstance(manager, this);
-   }
+    private void init() {
+        BeanManager manager = new BeanManagerLocator().getBeanManager();
+        BeanManagerUtils.injectNonContextualInstance(manager, this);
+    }
 
 }

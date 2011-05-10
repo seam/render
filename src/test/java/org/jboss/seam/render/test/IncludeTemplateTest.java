@@ -21,8 +21,6 @@
  */
 package org.jboss.seam.render.test;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,29 +33,28 @@ import org.jboss.seam.render.template.resolver.ClassLoaderTemplateResolver;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class IncludeTemplateTest extends RenderTestBase
-{
-   @Inject
-   private TemplateCompiler compiler;
+public class IncludeTemplateTest extends RenderTestBase {
+    @Inject
+    private TemplateCompiler compiler;
 
-   @Inject
-   protected void init(final TemplateResolverFactory factory)
-   {
-      compiler.getTemplateResolverFactory().addResolver(
-               new ClassLoaderTemplateResolver(this.getClass().getClassLoader()));
-   }
+    @Inject
+    protected void init(final TemplateResolverFactory factory) {
+        compiler.getTemplateResolverFactory().addResolver(
+                new ClassLoaderTemplateResolver(this.getClass().getClassLoader()));
+    }
 
-   @Test
-   public void testParamsAreAssignedToContextViaString() throws Exception
-   {
-      Map<Object, Object> context = new HashMap<Object, Object>();
+    @Test
+    public void testParamsAreAssignedToContextViaString() throws Exception {
+        Map<Object, Object> context = new HashMap<Object, Object>();
 
-      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/include/basic.xhtml");
-      String output = view.render(context);
+        CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/include/basic.xhtml");
+        String output = view.render(context);
 
-      assertTrue(output.contains("Hello World"));
-   }
+        assertTrue(output.contains("Hello World"));
+    }
 }

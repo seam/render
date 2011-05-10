@@ -28,32 +28,31 @@ import org.jboss.seam.solder.util.service.ServiceLoader;
  * {@link ServiceLoader} interface. This should be used to provide resolvers that know how to decode your specific
  * resource location scheme. For instance, a database or web-service loaded {@link TemplateResource} could be specified
  * using a custom path:
- * <p>
+ * <p/>
  * E.g: <code>"REST:/users/1/views/23"</code>
- * <p>
+ * <p/>
  * Next, in your application, create a service file containing the qualified class names of your
  * {@link TemplateResolver} implementations:
- * <p>
+ * <p/>
  * <strong>For example:</strong><br>
  * /META-INF/services/org.jboss.seam.render.spi.TemplateResolver<br>
  * -----<br>
  * <code>com.example.templates.CustomTemplateResolver</code> <br>
  * <code>com.example.templates.CustomTemplateResolver2</code> <br>
  * -----<br>
- * <p>
- * 
+ * <p/>
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface TemplateResolver<T>
-{
-   /**
-    * Attempt to resolve a {@link TemplateResource} using the given path. Return null if resolution fails.
-    */
-   public TemplateResource<T> resolve(String target);
+public interface TemplateResolver<T> {
+    /**
+     * Attempt to resolve a {@link TemplateResource} using the given path. Return null if resolution fails.
+     */
+    public TemplateResource<T> resolve(String target);
 
-   /**
-    * Attempt to resolve a {@link TemplateResource} using the given origin and relative path. Return null if resolution
-    * fails.
-    */
-   public TemplateResource<T> resolveRelative(TemplateResource<T> origin, String target);
+    /**
+     * Attempt to resolve a {@link TemplateResource} using the given origin and relative path. Return null if resolution
+     * fails.
+     */
+    public TemplateResource<T> resolveRelative(TemplateResource<T> origin, String target);
 }

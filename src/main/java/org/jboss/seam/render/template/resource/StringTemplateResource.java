@@ -29,63 +29,53 @@ import org.jboss.seam.render.spi.TemplateResource;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class StringTemplateResource implements TemplateResource<String>
-{
-   private final String template;
-   private final TemplateResolver<String> resolvedBy;
-   private String path = "";
+public class StringTemplateResource implements TemplateResource<String> {
+    private final String template;
+    private final TemplateResolver<String> resolvedBy;
+    private String path = "";
 
-   public StringTemplateResource(final TemplateResolver<String> resolvedBy, final String template, final String path)
-   {
-      this.template = template;
-      this.resolvedBy = resolvedBy;
-      this.path = path;
-   }
+    public StringTemplateResource(final TemplateResolver<String> resolvedBy, final String template, final String path) {
+        this.template = template;
+        this.resolvedBy = resolvedBy;
+        this.path = path;
+    }
 
-   public StringTemplateResource(final String template, final String path)
-   {
-      this.template = template;
-      this.resolvedBy = null;
-      this.path = path;
-   }
+    public StringTemplateResource(final String template, final String path) {
+        this.template = template;
+        this.resolvedBy = null;
+        this.path = path;
+    }
 
-   public StringTemplateResource(final String template)
-   {
-      this.template = template;
-      this.resolvedBy = null;
-      this.path = null;
-   }
+    public StringTemplateResource(final String template) {
+        this.template = template;
+        this.resolvedBy = null;
+        this.path = null;
+    }
 
-   @Override
-   public String getPath()
-   {
-      return path;
-   }
+    @Override
+    public String getPath() {
+        return path;
+    }
 
-   @Override
-   public InputStream getInputStream()
-   {
-      return new ByteArrayInputStream(template.getBytes());
-   }
+    @Override
+    public InputStream getInputStream() {
+        return new ByteArrayInputStream(template.getBytes());
+    }
 
-   @Override
-   public long getLastModified()
-   {
-      return 0;
-   }
+    @Override
+    public long getLastModified() {
+        return 0;
+    }
 
-   @Override
-   public String getUnderlyingResource()
-   {
-      return template;
-   }
+    @Override
+    public String getUnderlyingResource() {
+        return template;
+    }
 
-   @Override
-   public TemplateResolver<String> getResolvedBy()
-   {
-      return resolvedBy;
-   }
+    @Override
+    public TemplateResolver<String> getResolvedBy() {
+        return resolvedBy;
+    }
 
 }

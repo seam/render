@@ -28,19 +28,15 @@ import javax.enterprise.inject.spi.Extension;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class BeanManagerCaptureExtension implements Extension
-{
-   private static BeanManager manager;
+public class BeanManagerCaptureExtension implements Extension {
+    private static BeanManager manager;
 
-   public void grab(@Observes final AfterBeanDiscovery event, final BeanManager m)
-   {
-      manager = m;
-   }
+    public void grab(@Observes final AfterBeanDiscovery event, final BeanManager m) {
+        manager = m;
+    }
 
-   public static BeanManager getManager()
-   {
-      return manager;
-   }
+    public static BeanManager getManager() {
+        return manager;
+    }
 }

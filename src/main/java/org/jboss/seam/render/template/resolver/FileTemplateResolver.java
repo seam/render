@@ -31,42 +31,35 @@ import org.jboss.seam.render.util.Paths;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class FileTemplateResolver implements TemplateResolver<File>
-{
-   @Override
-   public TemplateResource<File> resolve(final String path)
-   {
-      Assert.notNull(path, "Resource path must not be null.");
-      File file = new File(path);
-      if (validResource(file))
-      {
-         return new FileTemplateResource(file, this);
-      }
-      return null;
-   }
+public class FileTemplateResolver implements TemplateResolver<File> {
+    @Override
+    public TemplateResource<File> resolve(final String path) {
+        Assert.notNull(path, "Resource path must not be null.");
+        File file = new File(path);
+        if (validResource(file)) {
+            return new FileTemplateResource(file, this);
+        }
+        return null;
+    }
 
-   @Override
-   public TemplateResource<File> resolveRelative(final TemplateResource<File> origin, String relativePath)
-   {
-      Assert.notNull(origin, "Origin resource must not be null.");
-      Assert.notNull(relativePath, "Relative resource path must not be null.");
-      relativePath = relativePath.trim();
-      String path = origin.getPath();
+    @Override
+    public TemplateResource<File> resolveRelative(final TemplateResource<File> origin, String relativePath) {
+        Assert.notNull(origin, "Origin resource must not be null.");
+        Assert.notNull(relativePath, "Relative resource path must not be null.");
+        relativePath = relativePath.trim();
+        String path = origin.getPath();
 
-      path = Paths.calculateRelativePath(path, relativePath);
+        path = Paths.calculateRelativePath(path, relativePath);
 
-      File file = new File(path);
-      if (validResource(file))
-      {
-         return new FileTemplateResource(file, this);
-      }
-      return null;
-   }
+        File file = new File(path);
+        if (validResource(file)) {
+            return new FileTemplateResource(file, this);
+        }
+        return null;
+    }
 
-   private boolean validResource(final File file)
-   {
-      return file.exists() && file.isFile();
-   }
+    private boolean validResource(final File file) {
+        return file.exists() && file.isFile();
+    }
 }

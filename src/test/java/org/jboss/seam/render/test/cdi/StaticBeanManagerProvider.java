@@ -27,20 +27,16 @@ import org.jboss.seam.solder.beanManager.BeanManagerProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class StaticBeanManagerProvider implements BeanManagerProvider
-{
-   @Override
-   public int getPrecedence()
-   {
-      return 0;
-   }
+public class StaticBeanManagerProvider implements BeanManagerProvider {
+    @Override
+    public int getPrecedence() {
+        return 0;
+    }
 
-   @Override
-   public BeanManager getBeanManager()
-   {
-      return BeanManagerCaptureExtension.getManager();
-   }
+    @Override
+    public BeanManager getBeanManager() {
+        return BeanManagerCaptureExtension.getManager();
+    }
 
 }

@@ -28,35 +28,28 @@ import java.util.Set;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public abstract class TemplateContext<E, T>
-{
-   private static final long serialVersionUID = -7871830377471038387L;
-   private final Map<E, T> map = new HashMap<E, T>();
+public abstract class TemplateContext<E, T> {
+    private static final long serialVersionUID = -7871830377471038387L;
+    private final Map<E, T> map = new HashMap<E, T>();
 
-   public T put(final E name, final T el)
-   {
-      return map.put(name, el);
-   }
+    public T put(final E name, final T el) {
+        return map.put(name, el);
+    }
 
-   public T get(final E name)
-   {
-      return map.get(name);
-   }
+    public T get(final E name) {
+        return map.get(name);
+    }
 
-   public Set<Entry<E, T>> entrySet()
-   {
-      return map.entrySet();
-   }
+    public Set<Entry<E, T>> entrySet() {
+        return map.entrySet();
+    }
 
-   protected boolean isEmpty()
-   {
-      return map.isEmpty();
-   }
+    protected boolean isEmpty() {
+        return map.isEmpty();
+    }
 
-   protected void clear()
-   {
-      map.clear();
-   }
+    protected void clear() {
+        map.clear();
+    }
 }

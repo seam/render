@@ -1,22 +1,22 @@
 <!-- This is a comment that will be rendered to output -->
-@extends{template.xhtml}
+        @extends{template.xhtml}
 
-	@param{title = "The title"}
+        @param{title = "The title"}
 
-	@define{body}
-	<h1>Hi, this is the world of templating.</h1>
-	
-	<label for="firstName">First Name:</label><br/>
-	<form action="@@view{}">
-		<input id="name" type="text" value="" />
-		<button name="submit" type="submit" value="@@action{submit, exampleBean.submit}"></button>
-	</form>
-	@end{}
-	
-	@define{footer}
-		Footer
-	@end{}
-	
-	This should be ignored.
+        @define{body}
+<h1>Hi, this is the world of templating.</h1>
 
-@end{}
+<label for="firstName">First Name:</label><br/>
+<form action="@@view{}">
+<input id="name" type="text" value=""/>
+<button name="submit" type="submit" value="@@action{submit, exampleBean.submit}"></button>
+</form>
+        @end{}
+
+        @define{footer}
+        Footer
+        @end{}
+
+        This should be ignored.
+
+        @end{}

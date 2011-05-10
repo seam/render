@@ -21,8 +21,6 @@
  */
 package org.jboss.seam.render.test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,34 +33,33 @@ import org.jboss.seam.render.template.resolver.ClassLoaderTemplateResolver;
 import org.jboss.seam.render.template.resolver.TemplateResolverFactory;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ParamNodeTest extends RenderTestBase
-{
-   @Inject
-   private TemplateCompiler compiler;
+public class ParamNodeTest extends RenderTestBase {
+    @Inject
+    private TemplateCompiler compiler;
 
-   @Inject
-   protected void init(final TemplateResolverFactory factory)
-   {
-      compiler.getTemplateResolverFactory().addResolver(
-               new ClassLoaderTemplateResolver(this.getClass().getClassLoader()));
-   }
+    @Inject
+    protected void init(final TemplateResolverFactory factory) {
+        compiler.getTemplateResolverFactory().addResolver(
+                new ClassLoaderTemplateResolver(this.getClass().getClassLoader()));
+    }
 
-   @Test
-   public void testParamsAreAssignedToContextViaString() throws Exception
-   {
-      String name = "name";
-      String value = "lb3";
+    @Test
+    public void testParamsAreAssignedToContextViaString() throws Exception {
+        String name = "name";
+        String value = "lb3";
 
-      Map<Object, Object> context = new HashMap<Object, Object>();
-      context.put(name, new String[] { value });
+        Map<Object, Object> context = new HashMap<Object, Object>();
+        context.put(name, new String[]{value});
 
-      CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/params/single.xhtml");
-      String output = view.render(context);
+        CompiledTemplateResource view = compiler.compile("org/jboss/seam/render/views/params/single.xhtml");
+        String output = view.render(context);
 
-      assertEquals("The title", context.get("title"));
-      assertEquals("", output);
-   }
+        assertEquals("The title", context.get("title"));
+        assertEquals("", output);
+    }
 }
