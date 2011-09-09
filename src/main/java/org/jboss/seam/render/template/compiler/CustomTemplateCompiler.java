@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import org.jboss.seam.render.util.StringUtils;
 
 import org.mvel2.CompileException;
 import org.mvel2.ParserContext;
@@ -317,6 +318,17 @@ public class CustomTemplateCompiler {
         return root;
     }
 
+    /**
+     * Imports the StringUtils class as the alias "render" so that all of the 
+     * static String utility methods in that class are available to the template 
+     * like @{render.uncapitalize(entityBeanName)}.
+     * 
+     * @param context 
+     */
+    private void addBundledHelpers(ParserContext context) {
+        context.addImport("render", StringUtils.class);
+    }
+
     // Parse Utilities Start Here
 
     private boolean isNext(char c) {
@@ -366,6 +378,10 @@ public class CustomTemplateCompiler {
 
     public ParserContext getParserContext() {
         return parserContext;
+    }
+    private void setParserContext(ParserContext context) {
+        addBundledHelpers(context);
+        this.parserContext = context;
     }
 
     public static CompiledTemplate compileTemplate(String template) {
@@ -477,7 +493,7 @@ public class CustomTemplateCompiler {
     public CustomTemplateCompiler(char[] template, boolean codeCache, ParserContext context) {
         this.length = (this.template = template).length;
         this.codeCache = codeCache;
-        this.parserContext = context;
+        setParserContext(context);
     }
 
     public CustomTemplateCompiler(CharSequence sequence) {
@@ -492,7 +508,7 @@ public class CustomTemplateCompiler {
     public CustomTemplateCompiler(CharSequence sequence, boolean codeCache, ParserContext context) {
         this.length = (this.template = sequence.toString().toCharArray()).length;
         this.codeCache = codeCache;
-        this.parserContext = context;
+        setParserContext(context);
     }
 
     public CustomTemplateCompiler(String template, Map<String, Class<? extends Node>> customNodes) {
@@ -534,7 +550,7 @@ public class CustomTemplateCompiler {
         this.length = (this.template = template.toCharArray()).length;
         this.customNodes = customNodes;
         this.codeCache = codeCache;
-        this.parserContext = context;
+        setParserContext(context);
     }
 
     public CustomTemplateCompiler(char[] template, Map<String, Class<? extends Node>> customNodes, boolean codeCache,
@@ -542,7 +558,7 @@ public class CustomTemplateCompiler {
         this.length = (this.template = template).length;
         this.customNodes = customNodes;
         this.codeCache = codeCache;
-        this.parserContext = context;
+        setParserContext(context);
     }
 
     public CustomTemplateCompiler(CharSequence sequence, Map<String, Class<? extends Node>> customNodes,
@@ -551,6 +567,6 @@ public class CustomTemplateCompiler {
         this.length = (this.template = sequence.toString().toCharArray()).length;
         this.customNodes = customNodes;
         this.codeCache = codeCache;
-        this.parserContext = context;
+        setParserContext(context);
     }
 }
