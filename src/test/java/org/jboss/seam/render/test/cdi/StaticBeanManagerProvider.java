@@ -23,20 +23,23 @@ package org.jboss.seam.render.test.cdi;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.seam.solder.beanManager.BeanManagerProvider;
+import org.jboss.solder.beanManager.BeanManagerProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class StaticBeanManagerProvider implements BeanManagerProvider {
-    @Override
-    public int getPrecedence() {
-        return 0;
-    }
+public class StaticBeanManagerProvider implements BeanManagerProvider
+{
+   @Override
+   public int getPrecedence()
+   {
+      return 0;
+   }
 
-    @Override
-    public BeanManager getBeanManager() {
-        return BeanManagerCaptureExtension.getManager();
-    }
+   @Override
+   public BeanManager getBeanManager()
+   {
+      return BeanManagerCaptureExtension.getManager();
+   }
 
 }

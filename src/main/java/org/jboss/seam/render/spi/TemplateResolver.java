@@ -21,7 +21,7 @@
  */
 package org.jboss.seam.render.spi;
 
-import org.jboss.seam.solder.util.service.ServiceLoader;
+import org.jboss.solder.util.service.ServiceLoader;
 
 /**
  * Defines a strategy for resolving {@link TemplateResource} assets. Additional resolvers can be registering using the
@@ -41,18 +41,19 @@ import org.jboss.seam.solder.util.service.ServiceLoader;
  * <code>com.example.templates.CustomTemplateResolver2</code> <br>
  * -----<br>
  * <p/>
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface TemplateResolver<T> {
-    /**
-     * Attempt to resolve a {@link TemplateResource} using the given path. Return null if resolution fails.
-     */
-    public TemplateResource<T> resolve(String target);
+public interface TemplateResolver<T>
+{
+   /**
+    * Attempt to resolve a {@link TemplateResource} using the given path. Return null if resolution fails.
+    */
+   public TemplateResource<T> resolve(String target);
 
-    /**
-     * Attempt to resolve a {@link TemplateResource} using the given origin and relative path. Return null if resolution
-     * fails.
-     */
-    public TemplateResource<T> resolveRelative(TemplateResource<T> origin, String target);
+   /**
+    * Attempt to resolve a {@link TemplateResource} using the given origin and relative path. Return null if resolution
+    * fails.
+    */
+   public TemplateResource<T> resolveRelative(TemplateResource<T> origin, String target);
 }
