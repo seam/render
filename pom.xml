@@ -10,7 +10,7 @@
 
    <groupId>org.jboss.seam.render</groupId>
    <artifactId>seam-render</artifactId>
-   <version>1.0.0.Final</version>
+   <version>1.0.1-SNAPSHOT</version>
    <packaging>jar</packaging>
 
    <repositories>
