@@ -33,100 +33,129 @@ import org.mvel2.templates.TemplateRuntime;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class CompositionContext extends TemplateContext<String, Definition> {
-    private final CompositionContext context;
-    private final TemplateCompiler templateCompiler;
-    private final VariableResolverFactory variableResolverFactory;
-    private final TemplateResource<?> resource;
-    private final TemplateRegistry templateRegistry;
-    private TemplateRuntime templateRuntime;
+public class CompositionContext extends TemplateContext<String, Definition>
+{
+   private final CompositionContext context;
+   private final TemplateCompiler templateCompiler;
+   private final VariableResolverFactory variableResolverFactory;
+   private final TemplateResource<?> resource;
+   private final TemplateRegistry templateRegistry;
+   private TemplateRuntime templateRuntime;
 
-    private static final ThreadLocal<Stack<CompositionContext>> stack;
+   private static ThreadLocal<Stack<CompositionContext>> stack;
 
-    static {
-        stack = new ThreadLocal<Stack<CompositionContext>>();
-        stack.set(new Stack<CompositionContext>());
-    }
+   public CompositionContext(final TemplateCompiler templateCompiler,
+            final VariableResolverFactory factory,
+            final TemplateRegistry registry,
+            final TemplateResource<?> resource)
+   {
+      Assert.notNull(templateCompiler, "TemplateCompiler must not be null.");
+      Assert.notNull(factory, "VariableResolverFactory must not be null.");
+      Assert.notNull(registry, "TemplateRegistry must not be null.");
+      Assert.notNull(resource, "TemplateResource must not be null.");
 
-    public CompositionContext(final TemplateCompiler templateCompiler,
-                              final VariableResolverFactory factory,
-                              final TemplateRegistry registry,
-                              final TemplateResource<?> resource) {
-        Assert.notNull(templateCompiler, "TemplateCompiler must not be null.");
-        Assert.notNull(factory, "VariableResolverFactory must not be null.");
-        Assert.notNull(registry, "TemplateRegistry must not be null.");
-        Assert.notNull(resource, "TemplateResource must not be null.");
+      this.templateCompiler = templateCompiler;
+      this.context = null;
+      this.variableResolverFactory = factory;
+      this.templateRegistry = registry;
+      this.resource = resource;
+   }
 
-        this.templateCompiler = templateCompiler;
-        this.context = null;
-        this.variableResolverFactory = factory;
-        this.templateRegistry = registry;
-        this.resource = resource;
-    }
+   private static void initStack()
+   {
+      if (stack == null)
+      {
+         CompositionContext.stack = new ThreadLocal<Stack<CompositionContext>>();
+      }
+      if(stack.get() == null)
+      {
+         stack.set(new Stack<CompositionContext>());
+      }
+   }
 
-    public CompositionContext(
+   private static ThreadLocal<Stack<CompositionContext>> getStack()
+   {
+      initStack();
+      return stack;
+   }
+
+   public CompositionContext(
             final TemplateResource<?> resource,
-            final CompositionContext context) {
-        Assert.notNull(resource, "TemplateResource must not be null.");
-        Assert.notNull(context, "CompositionContext must not be null.");
+            final CompositionContext context)
+   {
+      Assert.notNull(resource, "TemplateResource must not be null.");
+      Assert.notNull(context, "CompositionContext must not be null.");
 
-        this.templateCompiler = context.getTemplateCompiler();
-        this.variableResolverFactory = context.getVariableResolverFactory();
-        this.templateRegistry = context.getTemplateRegistry();
-        this.templateRuntime = context.getTemplateRuntime();
-        this.resource = resource;
-        this.context = context;
-    }
+      this.templateCompiler = context.getTemplateCompiler();
+      this.variableResolverFactory = context.getVariableResolverFactory();
+      this.templateRegistry = context.getTemplateRegistry();
+      this.templateRuntime = context.getTemplateRuntime();
+      this.resource = resource;
+      this.context = context;
+   }
 
-    @Override
-    public Definition get(final String name) {
-        Definition result = super.get(name);
-        if ((result == null) && (context != null)) {
-            result = context.get(name);
-        }
-        return result;
-    }
+   @Override
+   public Definition get(final String name)
+   {
+      Definition result = super.get(name);
+      if ((result == null) && (context != null))
+      {
+         result = context.get(name);
+      }
+      return result;
+   }
 
-    public static CompositionContext peek() {
-        if (!stack.get().isEmpty()) {
-            return stack.get().peek();
-        }
-        return null;
-    }
+   public static CompositionContext peek()
+   {
+      if (!getStack().get().isEmpty())
+      {
+         return getStack().get().peek();
+      }
+      return null;
+   }
 
-    public static CompositionContext push(final CompositionContext context) {
-        return stack.get().push(context);
-    }
+   public static CompositionContext push(final CompositionContext context)
+   {
+      return getStack().get().push(context);
+   }
 
-    public static CompositionContext pop() {
-        return stack.get().pop();
-    }
+   public static CompositionContext pop()
+   {
+      return getStack().get().pop();
+   }
 
-    public TemplateResource<?> getTemplateResource() {
-        return resource;
-    }
+   public TemplateResource<?> getTemplateResource()
+   {
+      return resource;
+   }
 
-    public CompositionContext getWrapped() {
-        return context;
-    }
+   public CompositionContext getWrapped()
+   {
+      return context;
+   }
 
-    public VariableResolverFactory getVariableResolverFactory() {
-        return variableResolverFactory;
-    }
+   public VariableResolverFactory getVariableResolverFactory()
+   {
+      return variableResolverFactory;
+   }
 
-    public TemplateRegistry getTemplateRegistry() {
-        return templateRegistry;
-    }
+   public TemplateRegistry getTemplateRegistry()
+   {
+      return templateRegistry;
+   }
 
-    public TemplateRuntime getTemplateRuntime() {
-        return templateRuntime;
-    }
+   public TemplateRuntime getTemplateRuntime()
+   {
+      return templateRuntime;
+   }
 
-    public void setTemplateRuntime(final TemplateRuntime templateRuntime) {
-        this.templateRuntime = templateRuntime;
-    }
+   public void setTemplateRuntime(final TemplateRuntime templateRuntime)
+   {
+      this.templateRuntime = templateRuntime;
+   }
 
-    public TemplateCompiler getTemplateCompiler() {
-        return templateCompiler;
-    }
+   public TemplateCompiler getTemplateCompiler()
+   {
+      return templateCompiler;
+   }
 }

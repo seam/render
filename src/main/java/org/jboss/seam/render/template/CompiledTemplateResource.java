@@ -98,11 +98,6 @@ public class CompiledTemplateResource
       CompositionContext.pop();
    }
 
-   public CompiledTemplate getCompiledTemplate()
-   {
-      return template;
-   }
-
    public TemplateResource<?> getSourceTemplateResource()
    {
       return resource;
